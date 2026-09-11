@@ -1,24 +1,20 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { HomeScreen } from "@/components/HomeScreen";
-import { RoleOnboarding } from "@/components/RoleOnboarding";
-import { clearProfile, getStoredName, getStoredRole, storeProfile } from "@/lib/role";
-import type { UserRole } from "@/lib/role";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import pandaHug from "@/assets/panda-hug.png";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "SmritiSetu — A gentle memory companion" },
+      { title: "Connect the Dots — Cuddly Red Panda Puzzle Game" },
       {
         name: "description",
         content:
-          "SmritiSetu is a calm daily companion for people living with memory loss and the caretakers who support them.",
+          "A gentle connect-the-dots puzzle game guided by a sleepy red panda who hugs the puzzle with all four paws.",
       },
-      { property: "og:title", content: "SmritiSetu — A gentle memory companion" },
+      { property: "og:title", content: "Connect the Dots — Cuddly Red Panda Puzzle Game" },
       {
         property: "og:description",
         content:
-          "A calm daily companion for people living with memory loss and the caretakers who support them.",
+          "A gentle connect-the-dots puzzle game guided by a sleepy red panda who hugs the puzzle with all four paws.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -28,39 +24,41 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
-  const [ready, setReady] = useState(false);
-  const [role, setRole] = useState<UserRole | null>(null);
-  const [name, setName] = useState("");
-
-  useEffect(() => {
-    setRole(getStoredRole());
-    setName(getStoredName());
-    setReady(true);
-  }, []);
-
-  if (!ready) return <div className="min-h-screen" />;
-
-  if (!role) {
-    return (
-      <RoleOnboarding
-        onComplete={(nextRole, nextName) => {
-          storeProfile(nextRole, nextName);
-          setRole(nextRole);
-          setName(nextName.trim());
-        }}
-      />
-    );
-  }
-
   return (
-    <HomeScreen
-      role={role}
-      name={name || "friend"}
-      onReset={() => {
-        clearProfile();
-        setRole(null);
-        setName("");
-      }}
-    />
+    <main className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-background px-6 py-16">
+      <div className="pointer-events-none absolute inset-0 bg-[image:var(--gradient-warm)]" aria-hidden />
+
+      <section className="relative flex flex-col items-center text-center">
+        <div className="relative">
+          <div
+            className="absolute inset-0 -z-10 translate-y-6 scale-90 rounded-full bg-accent/50 blur-3xl animate-breathe"
+            aria-hidden
+          />
+          <div className="animate-float-cuddle">
+            <img
+              src={pandaHug}
+              alt="Cute red panda lying down and hugging a connect-the-dots puzzle tile with its paws and back legs"
+              width={1024}
+              height={1024}
+              className="w-[clamp(16rem,52vw,26rem)] rotate-[-6deg] drop-shadow-[var(--shadow-soft)] animate-snuggle"
+            />
+          </div>
+        </div>
+
+        <h1 className="mt-4 font-display text-4xl tracking-tight text-foreground sm:text-5xl">
+          Connect the Dots
+        </h1>
+        <p className="mt-3 max-w-sm text-base text-muted-foreground">
+          Take it slow. Little Momo is holding the puzzle for you.
+        </p>
+
+        <Link
+          to="/play"
+          className="mt-8 rounded-full bg-primary px-10 py-4 text-lg font-semibold text-primary-foreground shadow-[var(--shadow-soft)] transition-transform duration-200 hover:scale-105 active:scale-95"
+        >
+          Start playing
+        </Link>
+      </section>
+    </main>
   );
 }
