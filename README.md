@@ -1,27 +1,14 @@
-# Panda's Cute Shapes
+# Northeast Dish Dash
 
-https://simple-shapes-game.lovable.app This is the app i created i want you to change that animation .i want this red panda to hold that icon cutely with his hands and legs lying down \.it should look more cute and approachable
-
-This project was built with [Lovable](https://lovable.dev).
-
-**Live app**: https://happy-shape-friend.lovable.app
-
-## Build with Lovable
-
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/004d5a80-fb76-4ab2-861c-87a3508c753c).
-# Northeastern Eats Match
-
-I want you to create the game. The homepage for the game should be same as the image that I have attached. Just change the name of the game. Name it as Marketplace. In this game, firstly, a person is shown list of some Northeastern food cuisines. Then the person will be given a big list of Northeastern food cuisines, and he or she has to choose the object which was shown before. The difficulty level should increase by every round. There should be five rounds, and at last, there should be add to favorites option, play again option, or motivational quote. Um, the game is overall for dementia patients, so keep that in mind.
-
-Keep the dishes northeastern-centric, and the images should be approaching and add the name of the dish But in very small font, like the image should be more visible than the text. The image should be the highlight
+I want you to create a game in which the homepage should be same, just change the name of the game as Market Place. And in that board, uh, draw a basket with some fruits. In this game, what we will do is there will be five rounds, and the person will be shown any, uh, some of the northeastern dishes on the screen. Then the dishes will disappear, and a list of various dishes will appear on the user's interface. And the users has to choose the correct dish. The level should increase gradually, and the dishes should have the image, and the name should not be prominent. It should be in small letters. The image should be prominent. And make sure all the dishes are northeastern. At the end, there should be a Play Again, Add to Favorites option with a motivational quote.
 
 This project was built with [Lovable](https://lovable.dev).
 
-**Live app**: https://northeast-memory-lane.lovable.app
+**Live app**: https://northeast-dish-dash.lovable.app
 
 ## Build with Lovable
 
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/6ca78ae8-37bc-4c4f-8856-eacb545c2edc).
+Continue developing this project in the [Lovable editor](https://lovable.dev/projects/f2346662-340d-4dd9-9f41-9e748b536f83).
 
 - **Ship faster**: describe what you want to build and Lovable handles the code.
 - **Stay in sync**: every change made in Lovable is committed straight to this repository.
