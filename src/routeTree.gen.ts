@@ -10,56 +10,11 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as ActivitiesRouteImport } from './routes/activities'
-import { Route as ChatbotRouteImport } from './routes/chatbot'
-import { Route as FamilyRouteImport } from './routes/family'
-import { Route as FavouritesRouteImport } from './routes/favourites'
-import { Route as FestivalFavouritesRouteImport } from './routes/festival-favourites'
-import { Route as FlipRouteImport } from './routes/flip'
 import { Route as MarketplaceRouteImport } from './routes/marketplace'
-import { Route as MemoryRouteImport } from './routes/memory'
-import { Route as MyDayRouteImport } from './routes/my-day'
-import { Route as PlayRouteImport } from './routes/play'
-import { Route as Play2RouteImport } from './routes/play2'
-import { Route as Play3RouteImport } from './routes/play3'
-import { Route as SettingsRouteImport } from './routes/settings'
-import { Route as SosRouteImport } from './routes/sos'
-import { Route as TalkRouteImport } from './routes/talk'
-import { Route as G22RouteImport } from './routes/g-2.2'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ActivitiesRoute = ActivitiesRouteImport.update({
-  id: '/activities',
-  path: '/activities',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ChatbotRoute = ChatbotRouteImport.update({
-  id: '/chatbot',
-  path: '/chatbot',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FamilyRoute = FamilyRouteImport.update({
-  id: '/family',
-  path: '/family',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FavouritesRoute = FavouritesRouteImport.update({
-  id: '/favourites',
-  path: '/favourites',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FestivalFavouritesRoute = FestivalFavouritesRouteImport.update({
-  id: '/festival-favourites',
-  path: '/festival-favourites',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FlipRoute = FlipRouteImport.update({
-  id: '/flip',
-  path: '/flip',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MarketplaceRoute = MarketplaceRouteImport.update({
@@ -67,188 +22,31 @@ const MarketplaceRoute = MarketplaceRouteImport.update({
   path: '/marketplace',
   getParentRoute: () => rootRouteImport,
 } as any)
-const MemoryRoute = MemoryRouteImport.update({
-  id: '/memory',
-  path: '/memory',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MyDayRoute = MyDayRouteImport.update({
-  id: '/my-day',
-  path: '/my-day',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PlayRoute = PlayRouteImport.update({
-  id: '/play',
-  path: '/play',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const Play2Route = Play2RouteImport.update({
-  id: '/play2',
-  path: '/play2',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const Play3Route = Play3RouteImport.update({
-  id: '/play3',
-  path: '/play3',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SettingsRoute = SettingsRouteImport.update({
-  id: '/settings',
-  path: '/settings',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SosRoute = SosRouteImport.update({
-  id: '/sos',
-  path: '/sos',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TalkRoute = TalkRouteImport.update({
-  id: '/talk',
-  path: '/talk',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const G22Route = G22RouteImport.update({
-  id: '/g-2/2',
-  path: '/g-2/2',
-  getParentRoute: () => rootRouteImport,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/activities': typeof ActivitiesRoute
-  '/chatbot': typeof ChatbotRoute
-  '/family': typeof FamilyRoute
-  '/favourites': typeof FavouritesRoute
-  '/festival-favourites': typeof FestivalFavouritesRoute
-  '/flip': typeof FlipRoute
   '/marketplace': typeof MarketplaceRoute
-  '/memory': typeof MemoryRoute
-  '/my-day': typeof MyDayRoute
-  '/play': typeof PlayRoute
-  '/play2': typeof Play2Route
-  '/play3': typeof Play3Route
-  '/settings': typeof SettingsRoute
-  '/sos': typeof SosRoute
-  '/talk': typeof TalkRoute
-  '/g-2/2': typeof G22Route
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/activities': typeof ActivitiesRoute
-  '/chatbot': typeof ChatbotRoute
-  '/family': typeof FamilyRoute
-  '/favourites': typeof FavouritesRoute
-  '/festival-favourites': typeof FestivalFavouritesRoute
-  '/flip': typeof FlipRoute
   '/marketplace': typeof MarketplaceRoute
-  '/memory': typeof MemoryRoute
-  '/my-day': typeof MyDayRoute
-  '/play': typeof PlayRoute
-  '/play2': typeof Play2Route
-  '/play3': typeof Play3Route
-  '/settings': typeof SettingsRoute
-  '/sos': typeof SosRoute
-  '/talk': typeof TalkRoute
-  '/g-2/2': typeof G22Route
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/activities': typeof ActivitiesRoute
-  '/chatbot': typeof ChatbotRoute
-  '/family': typeof FamilyRoute
-  '/favourites': typeof FavouritesRoute
-  '/festival-favourites': typeof FestivalFavouritesRoute
-  '/flip': typeof FlipRoute
   '/marketplace': typeof MarketplaceRoute
-  '/memory': typeof MemoryRoute
-  '/my-day': typeof MyDayRoute
-  '/play': typeof PlayRoute
-  '/play2': typeof Play2Route
-  '/play3': typeof Play3Route
-  '/settings': typeof SettingsRoute
-  '/sos': typeof SosRoute
-  '/talk': typeof TalkRoute
-  '/g-2/2': typeof G22Route
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    | '/'
-    | '/activities'
-    | '/chatbot'
-    | '/family'
-    | '/favourites'
-    | '/festival-favourites'
-    | '/flip'
-    | '/marketplace'
-    | '/memory'
-    | '/my-day'
-    | '/play'
-    | '/play2'
-    | '/play3'
-    | '/settings'
-    | '/sos'
-    | '/talk'
-    | '/g-2/2'
+  fullPaths: '/' | '/marketplace'
   fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | '/activities'
-    | '/chatbot'
-    | '/family'
-    | '/favourites'
-    | '/festival-favourites'
-    | '/flip'
-    | '/marketplace'
-    | '/memory'
-    | '/my-day'
-    | '/play'
-    | '/play2'
-    | '/play3'
-    | '/settings'
-    | '/sos'
-    | '/talk'
-    | '/g-2/2'
-  id:
-    | '__root__'
-    | '/'
-    | '/activities'
-    | '/chatbot'
-    | '/family'
-    | '/favourites'
-    | '/festival-favourites'
-    | '/flip'
-    | '/marketplace'
-    | '/memory'
-    | '/my-day'
-    | '/play'
-    | '/play2'
-    | '/play3'
-    | '/settings'
-    | '/sos'
-    | '/talk'
-    | '/g-2/2'
+  to: '/' | '/marketplace'
+  id: '__root__' | '/' | '/marketplace'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  ActivitiesRoute: typeof ActivitiesRoute
-  ChatbotRoute: typeof ChatbotRoute
-  FamilyRoute: typeof FamilyRoute
-  FavouritesRoute: typeof FavouritesRoute
-  FestivalFavouritesRoute: typeof FestivalFavouritesRoute
-  FlipRoute: typeof FlipRoute
   MarketplaceRoute: typeof MarketplaceRoute
-  MemoryRoute: typeof MemoryRoute
-  MyDayRoute: typeof MyDayRoute
-  PlayRoute: typeof PlayRoute
-  Play2Route: typeof Play2Route
-  Play3Route: typeof Play3Route
-  SettingsRoute: typeof SettingsRoute
-  SosRoute: typeof SosRoute
-  TalkRoute: typeof TalkRoute
-  G22Route: typeof G22Route
 }
 
 declare module '@tanstack/react-router' {
@@ -260,48 +58,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/activities': {
-      id: '/activities'
-      path: '/activities'
-      fullPath: '/activities'
-      preLoaderRoute: typeof ActivitiesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/chatbot': {
-      id: '/chatbot'
-      path: '/chatbot'
-      fullPath: '/chatbot'
-      preLoaderRoute: typeof ChatbotRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/family': {
-      id: '/family'
-      path: '/family'
-      fullPath: '/family'
-      preLoaderRoute: typeof FamilyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/favourites': {
-      id: '/favourites'
-      path: '/favourites'
-      fullPath: '/favourites'
-      preLoaderRoute: typeof FavouritesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/festival-favourites': {
-      id: '/festival-favourites'
-      path: '/festival-favourites'
-      fullPath: '/festival-favourites'
-      preLoaderRoute: typeof FestivalFavouritesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/flip': {
-      id: '/flip'
-      path: '/flip'
-      fullPath: '/flip'
-      preLoaderRoute: typeof FlipRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/marketplace': {
       id: '/marketplace'
       path: '/marketplace'
@@ -309,90 +65,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MarketplaceRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/memory': {
-      id: '/memory'
-      path: '/memory'
-      fullPath: '/memory'
-      preLoaderRoute: typeof MemoryRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/my-day': {
-      id: '/my-day'
-      path: '/my-day'
-      fullPath: '/my-day'
-      preLoaderRoute: typeof MyDayRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/play': {
-      id: '/play'
-      path: '/play'
-      fullPath: '/play'
-      preLoaderRoute: typeof PlayRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/play2': {
-      id: '/play2'
-      path: '/play2'
-      fullPath: '/play2'
-      preLoaderRoute: typeof Play2RouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/play3': {
-      id: '/play3'
-      path: '/play3'
-      fullPath: '/play3'
-      preLoaderRoute: typeof Play3RouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/settings': {
-      id: '/settings'
-      path: '/settings'
-      fullPath: '/settings'
-      preLoaderRoute: typeof SettingsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/sos': {
-      id: '/sos'
-      path: '/sos'
-      fullPath: '/sos'
-      preLoaderRoute: typeof SosRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/talk': {
-      id: '/talk'
-      path: '/talk'
-      fullPath: '/talk'
-      preLoaderRoute: typeof TalkRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/g-2/2': {
-      id: '/g-2/2'
-      path: '/g-2/2'
-      fullPath: '/g-2/2'
-      preLoaderRoute: typeof G22RouteImport
-      parentRoute: typeof rootRouteImport
-    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  ActivitiesRoute: ActivitiesRoute,
-  ChatbotRoute: ChatbotRoute,
-  FamilyRoute: FamilyRoute,
-  FavouritesRoute: FavouritesRoute,
-  FestivalFavouritesRoute: FestivalFavouritesRoute,
-  FlipRoute: FlipRoute,
   MarketplaceRoute: MarketplaceRoute,
-  MemoryRoute: MemoryRoute,
-  MyDayRoute: MyDayRoute,
-  PlayRoute: PlayRoute,
-  Play2Route: Play2Route,
-  Play3Route: Play3Route,
-  SettingsRoute: SettingsRoute,
-  SosRoute: SosRoute,
-  TalkRoute: TalkRoute,
-  G22Route: G22Route,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
