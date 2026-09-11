@@ -1,39 +1,62 @@
-# Panda's Cute Shapes
+# Smriti Setu — Actual One
 
-https://simple-shapes-game.lovable.app This is the app i created i want you to change that animation .i want this red panda to hold that icon cutely with his hands and legs lying down \.it should look more cute and approachable
+Dementia-friendly home-page frontend for the Smriti Setu hackathon project.
 
-This project was built with [Lovable](https://lovable.dev).
+## Run in VS Code
 
-**Live app**: https://happy-shape-friend.lovable.app
+1. Open this folder in VS Code.
+2. Open Terminal.
+3. Run:
 
-## Build with Lovable
-
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/004d5a80-fb76-4ab2-861c-87a3508c753c).
-# Northeastern Eats Match
-
-I want you to create the game. The homepage for the game should be same as the image that I have attached. Just change the name of the game. Name it as Marketplace. In this game, firstly, a person is shown list of some Northeastern food cuisines. Then the person will be given a big list of Northeastern food cuisines, and he or she has to choose the object which was shown before. The difficulty level should increase by every round. There should be five rounds, and at last, there should be add to favorites option, play again option, or motivational quote. Um, the game is overall for dementia patients, so keep that in mind.
-
-Keep the dishes northeastern-centric, and the images should be approaching and add the name of the dish But in very small font, like the image should be more visible than the text. The image should be the highlight
-
-This project was built with [Lovable](https://lovable.dev).
-
-**Live app**: https://northeast-memory-lane.lovable.app
-
-## Build with Lovable
-
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/6ca78ae8-37bc-4c4f-8856-eacb545c2edc).
-
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: every change made in Lovable is committed straight to this repository.
-- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
-
-## Development
-
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
-
-```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
+```bash
+npm install
 npm run dev
 ```
+
+4. Open the localhost address shown by Vite.
+
+## Structure
+
+- `index.html`
+- `package.json`
+- `src/App.jsx`
+- `src/main.jsx`
+- `src/Home.css`
+
+The four home-page buttons and the persistent footer already navigate between sections using URL hashes. Replace the placeholder sections in `src/App.jsx` with the real pages as you build them.
+
+## Firebase setup for Play with Friends
+
+The app runs safely in local demo mode when Firebase is not configured. To enable cross-device authentication, chat, offline sync, and multiplayer rooms:
+
+1. Create a Firebase project and register a Web app.
+2. Enable **Authentication → Sign-in method → Anonymous**.
+3. Create a Cloud Firestore database.
+4. Copy `.env.example` to `.env.local` and fill in the Firebase Web configuration values.
+5. Deploy `firestore.rules` using the Firebase CLI or paste the rules into the Firebase console.
+6. Restart the Vite development server.
+
+The connection banner on **Activities → Play with Friends** will change from “Demo mode” to “Firebase connected” when authentication and Firestore initialization succeed. Never commit `.env` or `.env.local`.
+
+## Bhashini translation
+
+The preferred-language screen supports Assamese, Bengali, Bodo, Manipuri, Khasi, Mizo and Nepali. A secure Firebase HTTPS function is included in `functions/index.js`; it performs Bhashini's pipeline-config and compute calls without exposing credentials to the browser.
+
+Authenticate the Firebase CLI, then configure the three required secrets and deploy:
+
+```sh
+firebase login
+firebase functions:secrets:set BHASHINI_USER_ID
+firebase functions:secrets:set BHASHINI_ULCA_API_KEY
+firebase functions:secrets:set BHASHINI_PIPELINE_ID
+firebase deploy --only functions,firestore:rules
+```
+
+Set `VITE_BHASHINI_PROXY_URL` to the deployed `translate` function URL and rebuild the app. Until this URL and valid Bhashini credentials are present, the interface keeps its local core-language labels and preserves other text in English.
+
+## Multiplayer testing
+
+Multiplayer requires two different Firebase users. Use two devices, two different browser profiles, or `localhost` and `127.0.0.1` during development. Exchange the six-character invite codes, accept the request, then send a game invitation from the chat. With only one user, use **Play solo instead**.
+
+
+Speech-to-text uses the browser Web Speech API. Chrome and Edge provide the best support; the microphone button appears beside the Play with Friends chat experience.

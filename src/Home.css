@@ -204,58 +204,6 @@ button {
 .day-card { background: #f4cfa1; }
 .play-card { background: #c9d7eb; }
 
-/* SOS shortcut card on the home page */
-.sos-shortcut {
-  grid-column: 1 / -1;
-  background: #e85c4a;
-  color: #fff;
-  min-height: 120px;
-}
-
-.sos-shortcut-icon {
-  background: #fff;
-  color: #e85c4a;
-  font-size: 22px;
-  font-weight: 800;
-  letter-spacing: 1px;
-}
-
-.sos-shortcut .action-text strong {
-  font-size: 24px;
-}
-
-.sos-shortcut .action-text span {
-  color: rgba(255, 255, 255, 0.85);
-}
-
-.sos-shortcut .arrow {
-  background: rgba(255, 255, 255, 0.35);
-  color: #fff;
-}
-
-/* Memories shortcut card on the home page */
-.memories-shortcut {
-  grid-column: 1 / -1;
-  background: linear-gradient(135deg, #c9d7eb 0%, #b9cbe6 100%);
-  color: #252525;
-  min-height: 120px;
-}
-
-.memories-shortcut-icon {
-  background: rgba(255, 255, 255, 0.7);
-  color: #5b8db8;
-  font-size: 30px;
-}
-
-.memories-shortcut .action-text strong {
-  font-size: 24px;
-}
-
-.memories-shortcut .arrow {
-  background: rgba(255, 255, 255, 0.6);
-  color: #252525;
-}
-
 .action-icon {
   width: 72px;
   height: 72px;
@@ -548,8 +496,8 @@ button:focus-visible {
 
 .mascot-container {
   width: 100%;
-  max-width: 440px;
-  margin: 6px auto 8px auto;
+  max-width: 850px;
+  margin: 0 auto 20px auto;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -557,144 +505,14 @@ button:focus-visible {
   box-shadow: none; /* Optional: remove box shadow if you want a clean float */
 }
 
-/* The red panda itself — calm, cozy, alive */
-.panda-mascot {
+.mascot-video {
   width: 100%;
-  height: auto;
-  max-height: 260px;
+  max-height: 280px;
+  object-fit: contain;
   display: block;
-  overflow: visible;
+  background: transparent;
 }
 
-/* ---- Gentle breathing (whole panda rocks up + down ever so slightly) ---- */
-.panda-body {
-  transform-box: fill-box;
-  transform-origin: center bottom;
-  animation: pandaBreathe 4s ease-in-out infinite;
-}
-
-@keyframes pandaBreathe {
-  0%, 100% { transform: scaleY(1); }
-  50% { transform: scaleY(1.015); }
-}
-
-/* Soft highlight on the belly that swells with each breath */
-.panda-breath {
-  transform-box: fill-box;
-  transform-origin: center;
-  animation: pandaBreatheGlow 4s ease-in-out infinite;
-}
-
-@keyframes pandaBreatheGlow {
-  0%, 100% { opacity: 0.10; }
-  50% { opacity: 0.22; }
-}
-
-/* ---- Head gently tilts and nuzzles ---- */
-.panda-head {
-  transform-box: fill-box;
-  transform-origin: center bottom;
-  animation: pandaNuzzle 6s ease-in-out infinite;
-}
-
-@keyframes pandaNuzzle {
-  0%, 100% { transform: rotate(0deg); }
-  12% { transform: rotate(2.5deg) translateY(1px); }
-  24% { transform: rotate(0deg); }
-}
-
-/* ---- Front paws + icon bob slightly with breathing ---- */
-.panda-front {
-  transform-box: fill-box;
-  transform-origin: center;
-  animation: pandaCuddle 4s ease-in-out infinite;
-}
-
-@keyframes pandaCuddle {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-2px); }
-}
-
-/* The sparkle icon twinkles and gleams softly */
-.panda-icon {
-  transform-box: fill-box;
-  transform-origin: center;
-  animation: pandaIconTwinkle 3s ease-in-out infinite;
-}
-
-@keyframes pandaIconTwinkle {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.06); }
-}
-
-/* ---- Ears give a tiny, occasional wiggle ---- */
-.panda-ear-left,
-.panda-ear-right {
-  transform-box: fill-box;
-  transform-origin: center bottom;
-  animation: pandaEar 5s ease-in-out infinite;
-}
-
-.panda-ear-right {
-  animation-delay: 1.3s;
-}
-
-@keyframes pandaEar {
-  0%, 86%, 100% { transform: rotate(0deg); }
-  90% { transform: rotate(-4deg); }
-  94% { transform: rotate(0deg); }
-}
-
-/* ---- Blinking, soft and slow ---- */
-.panda-head circle[r="9"] {
-  transform-box: fill-box;
-  transform-origin: center;
-  animation: pandaBlink 6s ease-in-out infinite;
-}
-
-@keyframes pandaBlink {
-  0%, 92%, 100% { transform: scaleY(1); }
-  95% { transform: scaleY(0.08); }
-  97% { transform: scaleY(1); }
-}
-
-/* ---- Tail curls up and gives a lazy flick ---- */
-.panda-tail {
-  transform-box: fill-box;
-  transform-origin: center bottom;
-  animation: pandaTail 7s ease-in-out infinite;
-}
-
-@keyframes pandaTail {
-  0%, 100% { transform: rotate(0deg); }
-  12% { transform: rotate(4deg) translateY(-2px); }
-  24% { transform: rotate(0deg); }
-}
-
-/* ---- Wandering hearts + sparkle ---- */
-.panda-heart {
-  opacity: 0;
-  animation: pandaFloatHeart 6s ease-in-out infinite;
-}
-
-.panda-heart-2 { animation-delay: 2s; }
-.panda-heart-3 { animation-delay: 4s; }
-
-@keyframes pandaFloatHeart {
-  0% { opacity: 0; transform: translateY(6px) scale(0.7); }
-  20% { opacity: 0.8; }
-  70% { opacity: 0.5; }
-  100% { opacity: 0; transform: translateY(-18px) scale(1.1); }
-}
-
-/* Respect users who prefer less motion */
-@media (prefers-reduced-motion: reduce) {
-  .panda-body, .panda-breath, .panda-head, .panda-front, .panda-icon,
-  .panda-ear-left, .panda-ear-right, .panda-tail, .panda-heart,
-  .panda-head circle[r="9"] {
-    animation: none !important;
-  }
-}
 .mascot-video {
   width: 100%;
   max-height: 280px;
