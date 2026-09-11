@@ -37,7 +37,7 @@ function Index() {
         Take it slow. Little Momo is holding the basket for you.
       </p>
       <Link
-        to="/play"
+        to="/marketplace"
         className="mt-8 inline-flex items-center justify-center rounded-full bg-primary px-10 py-4 text-lg font-semibold text-primary-foreground shadow-[var(--shadow-soft)] transition-transform hover:scale-105"
       >
         Start playing
