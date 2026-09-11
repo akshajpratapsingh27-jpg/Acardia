@@ -1,14 +1,3 @@
-# Panda's Cute Shapes
-
-https://simple-shapes-game.lovable.app This is the app i created i want you to change that animation .i want this red panda to hold that icon cutely with his hands and legs lying down \.it should look more cute and approachable
-
-This project was built with [Lovable](https://lovable.dev).
-
-**Live app**: https://happy-shape-friend.lovable.app
-
-## Build with Lovable
-
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/004d5a80-fb76-4ab2-861c-87a3508c753c).
 # Northeastern Eats Match
 
 I want you to create the game. The homepage for the game should be same as the image that I have attached. Just change the name of the game. Name it as Marketplace. In this game, firstly, a person is shown list of some Northeastern food cuisines. Then the person will be given a big list of Northeastern food cuisines, and he or she has to choose the object which was shown before. The difficulty level should increase by every round. There should be five rounds, and at last, there should be add to favorites option, play again option, or motivational quote. Um, the game is overall for dementia patients, so keep that in mind.

@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 User-agent: Googlebot
 Allow: /
 
@@ -12,6 +10,5 @@ Allow: /
 User-agent: facebookexternalhit
 Allow: /
 
->>>>>>> origin/Final-Homepage+Chatbot
 User-agent: *
 Allow: /

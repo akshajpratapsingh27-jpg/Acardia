@@ -1,68 +1,254 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { Gamepad2, ArrowLeft, ArrowRight } from "lucide-react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect, useMemo, useState } from "react";
+import { DISHES, ROUNDS, QUOTES, shuffle, type Dish } from "@/data/dishes";
+import { DishCard } from "@/components/DishCard";
+import { addFavourites, getFavourites, toggleFavourite } from "@/lib/favourites";
 
-const GAME_OPTIONS = [
-  { id: "g-2.1", title: "Memory Match", blurb: "Match pairs of traditional cultural artifacts", route: "/play3" },
-  { id: "g-2.2", title: "Tune With Me", blurb: "Explore nature sounds and traditional melodies", route: "/play2" },
-  { id: "g-2.3", title: "Festival Puzzle", blurb: "Assemble vibrant cultural celebration scenes", route: "" },
-  { id: "g-2.4", title: "Handloom Weaving", blurb: "Create symmetrical geometric patterns", route: "" },
-  { id: "g-2.5", title: "Bamboo Rhythm", blurb: "Follow the acoustic beat patterns", route: "" },
-];
+export const Route = createFileRoute("/play")({
+  head: () => ({
+    meta: [
+      { title: "Play Marketplace — Find the Dish You Saw" },
+      {
+        name: "description",
+        content:
+          "Five gentle rounds: look at a Northeast Indian dish, then find it again in the market stall. No timers to fear, no wrong turns.",
+      },
+      { property: "og:title", content: "Play Marketplace — Find the Dish You Saw" },
+      {
+        property: "og:description",
+        content: "Five gentle rounds of remembering Northeast Indian dishes.",
+      },
+    ],
+  }),
+  component: Play,
+});
 
-function GamesMenuPage() {
-  const navigate = useNavigate();
+type Phase = "show" | "choose" | "round-done" | "finished";
+
+function buildRound(index: number) {
+  const cfg = ROUNDS[index]!;
+  const pool = shuffle(DISHES);
+  const targets = pool.slice(0, cfg.targets);
+  const distractors = pool.slice(cfg.targets, cfg.options);
+  return { cfg, targets, options: shuffle([...targets, ...distractors]) };
+}
+
+function Play() {
+  const [roundIndex, setRoundIndex] = useState(0);
+  const [round, setRound] = useState<ReturnType<typeof buildRound> | null>(null);
+  const [phase, setPhase] = useState<Phase>("show");
+  const [secondsLeft, setSecondsLeft] = useState(ROUNDS[0]!.seconds);
+  const [found, setFound] = useState<string[]>([]);
+  const [wrongId, setWrongId] = useState<string | null>(null);
+  const [seen, setSeen] = useState<Dish[]>([]);
+  const [favourites, setFavourites] = useState<string[]>([]);
+  const quote = useMemo(() => QUOTES[Math.floor(Math.random() * QUOTES.length)]!, [roundIndex]);
+
+  useEffect(() => {
+    setFavourites(getFavourites());
+    setRound((r) => r ?? buildRound(0));
+  }, []);
+
+  useEffect(() => {
+    if (phase !== "show") return;
+    if (secondsLeft <= 0) {
+      setPhase("choose");
+      return;
+    }
+    const t = setTimeout(() => setSecondsLeft((s) => s - 1), 1000);
+    return () => clearTimeout(t);
+  }, [phase, secondsLeft]);
+
+  function startRound(index: number) {
+    const next = buildRound(index);
+    setRoundIndex(index);
+    setRound(next);
+    setSecondsLeft(next.cfg.seconds);
+    setFound([]);
+    setWrongId(null);
+    setPhase("show");
+  }
+
+  function pick(dish: Dish) {
+    if (!round || found.includes(dish.id)) return;
+    const isTarget = round.targets.some((t) => t.id === dish.id);
+    if (!isTarget) {
+      setWrongId(dish.id);
+      setTimeout(() => setWrongId(null), 1100);
+      return;
+    }
+    const nextFound = [...found, dish.id];
+    setFound(nextFound);
+    setWrongId(null);
+    if (round && nextFound.length === round.targets.length) {
+      setSeen((prev) => [...prev, ...round.targets]);
+      setTimeout(() => setPhase(roundIndex === ROUNDS.length - 1 ? "finished" : "round-done"), 700);
+    }
+  }
+
+  const progress = `Round ${roundIndex + 1} of ${ROUNDS.length}`;
+
+  if (!round) {
+    return (
+      <main className="flex min-h-screen items-center justify-center px-5">
+        <p className="text-lg text-muted-foreground">Setting up the market…</p>
+      </main>
+    );
+  }
 
   return (
-    <main className="mx-auto flex min-h-screen w-full max-w-2xl flex-col px-5 py-12">
-      <header className="mb-8">
-        <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">Games Collection</h1>
-        <p className="mt-2 text-base text-muted-foreground">
-          Choose a game from the options below.
-        </p>
+    <main className="mx-auto min-h-screen w-full max-w-4xl px-5 py-8">
+      <header className="flex items-center justify-between">
+        <Link to="/" className="text-base font-semibold text-muted-foreground underline">
+          Home
+        </Link>
+        <div className="flex gap-1.5">
+          {ROUNDS.map((_, i) => (
+            <span
+              key={i}
+              className={`h-2.5 w-8 rounded-full ${i <= roundIndex ? "bg-primary" : "bg-border"}`}
+            />
+          ))}
+        </div>
       </header>
 
-      <div className="grid gap-4">
-        {GAME_OPTIONS.map((game) => (
-          <button
-            key={game.id}
-            type="button"
-            onClick={() => {
-              if (game.route) {
-                window.location.href = game.route;
-              } else {
-                alert(`Opening ${game.title}...`);
-              }
-            }}
-            className="group relative flex items-center gap-4 overflow-hidden rounded-3xl border border-border bg-card p-6 text-left shadow-soft transition-all duration-300 hover:-translate-y-1 hover:shadow-lift"
+      {phase === "show" && (
+        <section className="mt-8 text-center animate-gentle-pop">
+          <p className="text-sm font-semibold uppercase tracking-widest text-muted-foreground">
+            {progress}
+          </p>
+          <h1 className="mt-2 text-3xl font-bold sm:text-4xl">
+            {round.targets.length === 1 ? "Look at this dish" : "Look at these dishes"}
+          </h1>
+          <p className="mt-2 text-lg text-muted-foreground">
+            Take your time. You will find {round.targets.length === 1 ? "it" : "them"} again next.
+          </p>
+          <div
+            className={`mx-auto mt-6 grid max-w-xl gap-4 ${
+              round.targets.length === 1 ? "grid-cols-1 max-w-xs" : "grid-cols-2 sm:grid-cols-3"
+            }`}
           >
-            <span className="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-sky/20 text-sky-foreground shadow-soft transition-transform duration-300 group-hover:scale-105">
-              <Gamepad2 className="size-7" strokeWidth={1.8} />
-            </span>
-            <span className="flex-1">
-              <span className="flex items-center gap-2">
-                <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-muted text-muted-foreground">{game.id}</span>
-                <span className="text-xl font-bold tracking-tight">{game.title}</span>
-              </span>
-              <span className="block text-sm text-muted-foreground mt-1">{game.blurb}</span>
-            </span>
-            <span className="flex size-10 items-center justify-center rounded-full bg-secondary transition-transform duration-300 group-hover:translate-x-1">
-              <ArrowRight className="size-5" />
-            </span>
+            {round.targets.map((d) => (
+              <DishCard key={d.id} dish={d} size="lg" />
+            ))}
+          </div>
+          <button
+            type="button"
+            onClick={() => setPhase("choose")}
+            className="mt-7 rounded-full bg-primary px-10 py-4 text-lg font-bold text-primary-foreground"
+          >
+            I'm ready ({secondsLeft})
           </button>
-        ))}
-      </div>
+        </section>
+      )}
 
-      <button
-        type="button"
-        onClick={() => void navigate({ to: "/activities" })}
-        className="mt-8 flex items-center gap-2 self-start text-sm font-medium text-muted-foreground hover:text-foreground"
-      >
-        <ArrowLeft className="size-4" /> Back to Activities
-      </button>
+      {(phase === "choose" || phase === "round-done") && (
+        <section className="mt-8 text-center">
+          <p className="text-sm font-semibold uppercase tracking-widest text-muted-foreground">
+            {progress}
+          </p>
+          <h1 className="mt-2 text-3xl font-bold sm:text-4xl">
+            {round.targets.length === 1
+              ? "Which dish did you just see?"
+              : `Find the ${round.targets.length} dishes you just saw`}
+          </h1>
+          <p className="mt-2 text-lg text-muted-foreground">
+            {wrongId ? "Not that one — try another. You're doing fine." : "Tap a dish when you're ready."}
+          </p>
+
+          <div
+            className={`mt-6 grid gap-4 ${
+              round.options.length <= 4
+                ? "grid-cols-2"
+                : round.options.length <= 6
+                  ? "grid-cols-2 sm:grid-cols-3"
+                  : "grid-cols-2 sm:grid-cols-3 md:grid-cols-4"
+            }`}
+          >
+            {round.options.map((d) => (
+              <DishCard
+                key={d.id}
+                dish={d}
+                onClick={() => pick(d)}
+                disabled={phase === "round-done"}
+                state={
+                  found.includes(d.id)
+                    ? "correct"
+                    : wrongId === d.id
+                      ? "wrong"
+                      : phase === "round-done"
+                        ? "dim"
+                        : "idle"
+                }
+              />
+            ))}
+          </div>
+
+          {phase === "round-done" && (
+            <div className="mt-8 rounded-3xl card-soft p-6 animate-gentle-pop">
+              <p className="text-2xl font-bold">Lovely. You remembered.</p>
+              <p className="mt-1 text-muted-foreground">{quote}</p>
+              <button
+                type="button"
+                onClick={() => startRound(roundIndex + 1)}
+                className="mt-5 rounded-full bg-primary px-10 py-4 text-lg font-bold text-primary-foreground"
+              >
+                Next round
+              </button>
+            </div>
+          )}
+        </section>
+      )}
+
+      {phase === "finished" && (
+        <section className="mt-10 text-center animate-gentle-pop">
+          <h1 className="text-4xl font-bold">All five rounds done</h1>
+          <p className="mx-auto mt-3 max-w-lg text-lg text-muted-foreground">{quote}</p>
+
+          <h2 className="mt-10 text-xl font-bold">The dishes you met today</h2>
+          <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
+            {seen.map((d, i) => (
+              <div key={`${d.id}-${i}`} className="relative">
+                <DishCard dish={d} />
+                <button
+                  type="button"
+                  aria-label={`Add ${d.name} to favourites`}
+                  onClick={() => setFavourites(toggleFavourite(d.id))}
+                  className="absolute right-2 top-2 rounded-full bg-card/90 px-3 py-1.5 text-lg leading-none shadow"
+                >
+                  {favourites.includes(d.id) ? "♥" : "♡"}
+                </button>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-8 flex flex-wrap justify-center gap-3">
+            <button
+              type="button"
+              onClick={() => setFavourites(addFavourites(seen.map((d) => d.id)))}
+              className="rounded-full bg-accent px-8 py-4 text-lg font-bold text-accent-foreground"
+            >
+              Add all to favourites
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setSeen([]);
+                startRound(0);
+              }}
+              className="rounded-full bg-primary px-8 py-4 text-lg font-bold text-primary-foreground"
+            >
+              Play again
+            </button>
+            <Link
+              to="/favourites"
+              className="rounded-full border-2 border-border px-8 py-4 text-lg font-bold text-foreground"
+            >
+              See favourites
+            </Link>
+          </div>
+        </section>
+      )}
     </main>
   );
 }
-
-export const Route = createFileRoute("/play")({
-  component: GamesMenuPage,
-});

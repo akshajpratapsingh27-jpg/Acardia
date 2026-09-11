@@ -1,6 +1,3 @@
-import * as React from 'react';
-import * as LabelPrimitive from '@radix-ui/react-label';
-import { Slot } from '@radix-ui/react-slot';
 import * as React from "react";
 import * as LabelPrimitive from "@radix-ui/react-label";
 import { Slot } from "@radix-ui/react-slot";
@@ -11,9 +8,6 @@ import {
   type ControllerProps,
   type FieldPath,
   type FieldValues,
-} from 'react-hook-form';
-import { Label } from '@/components/ui/label';
-import { cn } from '@/lib/utils';
 } from "react-hook-form";
 
 import { cn } from "@/lib/utils";
@@ -28,9 +22,6 @@ type FormFieldContextValue<
   name: TName;
 };
 
-const FormFieldContext = React.createContext<FormFieldContextValue | null>(
-  null,
-);
 const FormFieldContext = React.createContext<FormFieldContextValue | null>(null);
 
 const FormField = <
@@ -52,11 +43,6 @@ const useFormField = () => {
   const { getFieldState, formState } = useFormContext();
 
   if (!fieldContext) {
-    throw new Error('useFormField should be used within <FormField>');
-  }
-
-  if (!itemContext) {
-    throw new Error('useFormField should be used within <FormItem>');
     throw new Error("useFormField should be used within <FormField>");
   }
 
@@ -84,19 +70,6 @@ type FormItemContextValue = {
 
 const FormItemContext = React.createContext<FormItemContextValue | null>(null);
 
-const FormItem = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => {
-  const id = React.useId();
-
-  return (
-    <FormItemContext.Provider value={{ id }}>
-      <div ref={ref} className={cn('space-y-2', className)} {...props} />
-    </FormItemContext.Provider>
-  );
-});
-FormItem.displayName = 'FormItem';
 const FormItem = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => {
     const id = React.useId();
@@ -119,56 +92,31 @@ const FormLabel = React.forwardRef<
   return (
     <Label
       ref={ref}
-<<<<<<< HEAD
-      className={cn(error && 'text-destructive', className)}
-=======
       className={cn(error && "text-destructive", className)}
->>>>>>> origin/Final-Homepage+Chatbot
       htmlFor={formItemId}
       {...props}
     />
   );
 });
-<<<<<<< HEAD
-FormLabel.displayName = 'FormLabel';
-=======
 FormLabel.displayName = "FormLabel";
->>>>>>> origin/Final-Homepage+Chatbot
 
 const FormControl = React.forwardRef<
   React.ElementRef<typeof Slot>,
   React.ComponentPropsWithoutRef<typeof Slot>
 >(({ ...props }, ref) => {
-<<<<<<< HEAD
-  const { error, formItemId, formDescriptionId, formMessageId } =
-    useFormField();
-=======
   const { error, formItemId, formDescriptionId, formMessageId } = useFormField();
->>>>>>> origin/Final-Homepage+Chatbot
 
   return (
     <Slot
       ref={ref}
       id={formItemId}
-<<<<<<< HEAD
-      aria-describedby={
-        !error
-          ? `${formDescriptionId}`
-          : `${formDescriptionId} ${formMessageId}`
-      }
-=======
       aria-describedby={!error ? `${formDescriptionId}` : `${formDescriptionId} ${formMessageId}`}
->>>>>>> origin/Final-Homepage+Chatbot
       aria-invalid={!!error}
       {...props}
     />
   );
 });
-<<<<<<< HEAD
-FormControl.displayName = 'FormControl';
-=======
 FormControl.displayName = "FormControl";
->>>>>>> origin/Final-Homepage+Chatbot
 
 const FormDescription = React.forwardRef<
   HTMLParagraphElement,
@@ -180,31 +128,19 @@ const FormDescription = React.forwardRef<
     <p
       ref={ref}
       id={formDescriptionId}
-<<<<<<< HEAD
-      className={cn('text-[0.8rem] text-muted-foreground', className)}
-=======
       className={cn("text-[0.8rem] text-muted-foreground", className)}
->>>>>>> origin/Final-Homepage+Chatbot
       {...props}
     />
   );
 });
-<<<<<<< HEAD
-FormDescription.displayName = 'FormDescription';
-=======
 FormDescription.displayName = "FormDescription";
->>>>>>> origin/Final-Homepage+Chatbot
 
 const FormMessage = React.forwardRef<
   HTMLParagraphElement,
   React.HTMLAttributes<HTMLParagraphElement>
 >(({ className, children, ...props }, ref) => {
   const { error, formMessageId } = useFormField();
-<<<<<<< HEAD
-  const body = error ? String(error?.message ?? '') : children;
-=======
   const body = error ? String(error?.message ?? "") : children;
->>>>>>> origin/Final-Homepage+Chatbot
 
   if (!body) {
     return null;
@@ -214,22 +150,14 @@ const FormMessage = React.forwardRef<
     <p
       ref={ref}
       id={formMessageId}
-<<<<<<< HEAD
-      className={cn('text-[0.8rem] font-medium text-destructive', className)}
-=======
       className={cn("text-[0.8rem] font-medium text-destructive", className)}
->>>>>>> origin/Final-Homepage+Chatbot
       {...props}
     >
       {body}
     </p>
   );
 });
-<<<<<<< HEAD
-FormMessage.displayName = 'FormMessage';
-=======
 FormMessage.displayName = "FormMessage";
->>>>>>> origin/Final-Homepage+Chatbot
 
 export {
   useFormField,
