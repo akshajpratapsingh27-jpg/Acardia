@@ -1,62 +1,26 @@
-# Smriti Setu — Actual One
+# Northeast Dish Dash
 
-Dementia-friendly home-page frontend for the Smriti Setu hackathon project.
+I want you to create a game in which the homepage should be same, just change the name of the game as Market Place. And in that board, uh, draw a basket with some fruits. In this game, what we will do is there will be five rounds, and the person will be shown any, uh, some of the northeastern dishes on the screen. Then the dishes will disappear, and a list of various dishes will appear on the user's interface. And the users has to choose the correct dish. The level should increase gradually, and the dishes should have the image, and the name should not be prominent. It should be in small letters. The image should be prominent. And make sure all the dishes are northeastern. At the end, there should be a Play Again, Add to Favorites option with a motivational quote.
 
-## Run in VS Code
+This project was built with [Lovable](https://lovable.dev).
 
-1. Open this folder in VS Code.
-2. Open Terminal.
-3. Run:
+**Live app**: https://northeast-dish-dash.lovable.app
 
-```bash
-npm install
-npm run dev
-```
+## Build with Lovable
 
-4. Open the localhost address shown by Vite.
+Continue developing this project in the [Lovable editor](https://lovable.dev/projects/f2346662-340d-4dd9-9f41-9e748b536f83).
 
-## Structure
+- **Ship faster**: describe what you want to build and Lovable handles the code.
+- **Stay in sync**: every change made in Lovable is committed straight to this repository.
+- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
 
-- `index.html`
-- `package.json`
-- `src/App.jsx`
-- `src/main.jsx`
-- `src/Home.css`
+## Development
 
-The four home-page buttons and the persistent footer already navigate between sections using URL hashes. Replace the placeholder sections in `src/App.jsx` with the real pages as you build them.
-
-## Firebase setup for Play with Friends
-
-The app runs safely in local demo mode when Firebase is not configured. To enable cross-device authentication, chat, offline sync, and multiplayer rooms:
-
-1. Create a Firebase project and register a Web app.
-2. Enable **Authentication → Sign-in method → Anonymous**.
-3. Create a Cloud Firestore database.
-4. Copy `.env.example` to `.env.local` and fill in the Firebase Web configuration values.
-5. Deploy `firestore.rules` using the Firebase CLI or paste the rules into the Firebase console.
-6. Restart the Vite development server.
-
-The connection banner on **Activities → Play with Friends** will change from “Demo mode” to “Firebase connected” when authentication and Firestore initialization succeed. Never commit `.env` or `.env.local`.
-
-## Bhashini translation
-
-The preferred-language screen supports Assamese, Bengali, Bodo, Manipuri, Khasi, Mizo and Nepali. A secure Firebase HTTPS function is included in `functions/index.js`; it performs Bhashini's pipeline-config and compute calls without exposing credentials to the browser.
-
-Authenticate the Firebase CLI, then configure the three required secrets and deploy:
+Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
 
 ```sh
-firebase login
-firebase functions:secrets:set BHASHINI_USER_ID
-firebase functions:secrets:set BHASHINI_ULCA_API_KEY
-firebase functions:secrets:set BHASHINI_PIPELINE_ID
-firebase deploy --only functions,firestore:rules
+git clone <this-repository-url>
+cd <repository-name>
+npm i
+npm run dev
 ```
-
-Set `VITE_BHASHINI_PROXY_URL` to the deployed `translate` function URL and rebuild the app. Until this URL and valid Bhashini credentials are present, the interface keeps its local core-language labels and preserves other text in English.
-
-## Multiplayer testing
-
-Multiplayer requires two different Firebase users. Use two devices, two different browser profiles, or `localhost` and `127.0.0.1` during development. Exchange the six-character invite codes, accept the request, then send a game invitation from the chat. With only one user, use **Play solo instead**.
-
-
-Speech-to-text uses the browser Web Speech API. Chrome and Edge provide the best support; the microphone button appears beside the Play with Friends chat experience.
