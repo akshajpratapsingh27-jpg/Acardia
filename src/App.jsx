@@ -1,12 +1,8 @@
-import React, { useEffect, useState } from "react";
-import RedPandaMascot from "./RedPandaMascot.jsx";
 import React, { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import { claimGameWin, createCloudGameRoom, firebaseConfigured, removeFriend, respondToFriendInvite, sendCloudMessage, sendFriendInvite, updateCloudGameRoom, updateUserProfile, watchConversation, watchFirebaseUser, watchFriendInvites, watchFriends, watchGameRoom, watchUserProfile } from "./firebase.js";
 import { BHASHINI_LANGUAGES, bhashiniConfigured, coreUi, translateWithBhashini } from "./translation.js";
 import { NorthEastMemoryGame, PictureJigsawGame, RestoreRoomGame } from "./games.jsx";
-import SosPage from "./SosPage.jsx";
-import MemoryPage from "./MemoryPage.jsx";
 
 const DEMO_FRIENDS = [
   { id: 1, name: "Anaya", relation: "Granddaughter", avatar: "A", online: true },
@@ -49,86 +45,6 @@ function GamesHub({ onStartGame }) {
   return <Page title="Let's Play" subtitle="Play offline now, or invite a friend."><div className="game-grid">{Object.entries(GAME_INFO).map(([id, game]) => <article className="game-card" key={id} style={{ "--game-color": game.color }}><div className="game-icon">{game.icon}</div><h3>{game.title}</h3><p>{game.detail}</p><div className="game-actions"><button onClick={() => onStartGame(id, "offline")}>Play Offline</button><button className="secondary" onClick={() => routeTo("play-with-friends")}>Play with Friend</button></div></article>)}</div><Mascot mood="bounce" message="You can play these three games offline too." /></Page>;
 }
 
-<<<<<<< HEAD
-function Home() {
-  return (
-    <main className="home-content">
-      <div className="mascot-container">
-        <RedPandaMascot />
-      </div>
-
-      <section className="welcome">
-        <div className="welcome-small">GOOD TO SEE YOU</div>
-        <h2>Hello, <span>Darsh</span></h2>
-        <p>What would you like to do today?</p>
-      </section>
-
-      <section className="main-actions">
-        <button className="action-card family-card" onClick={() => navigate("family")}>
-          <div className="action-icon">👨‍👩‍👧</div>
-          <div className="action-text">
-            <strong>Family</strong>
-            <span>See your loved ones</span>
-          </div>
-          <div className="arrow">→</div>
-        </button>
-
-        <button className="action-card talk-card" onClick={() => navigate("chatbot")}>
-          <div className="action-icon">💬</div>
-          <div className="action-text">
-            <strong>Talk to me</strong>
-            <span>Let's have a conversation</span>
-          </div>
-          <div className="arrow">→</div>
-        </button>
-
-        <button className="action-card day-card" onClick={() => navigate("my-day")}>
-          <div className="action-icon">☀️</div>
-          <div className="action-text">
-            <strong>My Day</strong>
-            <span>See what is happening today</span>
-          </div>
-          <div className="arrow">→</div>
-        </button>
-
-        <button className="action-card play-card" onClick={() => navigate("games")}>
-          <div className="action-icon">🎵</div>
-          <div className="action-text">
-            <strong>Let's Play</strong>
-            <span>Fun games for your mind</span>
-          </div>
-          <div className="arrow">→</div>
-        </button>
-
-        <button className="action-card memories-shortcut" onClick={() => navigate("memory")}>
-          <div className="action-icon memories-shortcut-icon">♥</div>
-          <div className="action-text">
-            <strong>Memories</strong>
-            <span>Photos, videos &amp; my special days</span>
-          </div>
-          <div className="arrow">→</div>
-        </button>
-
-        <button className="action-card sos-shortcut" onClick={() => navigate("sos")}>
-          <div className="action-icon sos-shortcut-icon">SOS</div>
-          <div className="action-text">
-            <strong>I need help</strong>
-            <span>Press for emergency contacts</span>
-          </div>
-          <div className="arrow">→</div>
-        </button>
-      </section>
-
-      <section className="daily-message">
-        <div className="sun-circle">☀</div>
-        <div>
-          <span className="message-label">TODAY'S LITTLE REMINDER</span>
-          <p>Take your time. There is no hurry.</p>
-        </div>
-      </section>
-    </main>
-  );
-=======
 function PlayWithFriends({ online, cloudUser, backendStatus, messages, setMessages, onStartGame }) {
   const [tab, setTab] = useState("friends");
   const [friends, setFriends] = useState(firebaseConfigured ? [] : DEMO_FRIENDS);
@@ -170,7 +86,6 @@ function PlayWithFriends({ online, cloudUser, backendStatus, messages, setMessag
 }
 function MultiplayerPanel({ friends, friend, setFriend, onInvite }) {
   return <div className="multiplayer-panel">{friend ? <><div className="play-with"><span>Choose a friend to invite</span><select value={friend.id} onChange={(e) => setFriend(friends.find((item) => item.id === e.target.value))}>{friends.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}</select></div><div className="game-grid compact">{Object.entries(GAME_INFO).map(([id, game]) => <button key={id} className="multiplayer-card" style={{ "--game-color": game.color }} onClick={() => onInvite(id)}><span>{game.icon}</span><strong>{game.title}</strong><small>{game.detail}</small><b>Invite {friend.name} →</b></button>)}</div></> : <div className="solo-note"><strong>Add a friend before starting multiplayer.</strong><p>Use Friends & Chat to exchange invite codes. Once accepted, either friend can send a game invitation.</p><button onClick={() => routeTo("games")}>Play solo instead</button></div>}</div>;
->>>>>>> origin/feature/play-with-friends
 }
 
 function GameRoom({ gameId, mode, friend, roomId, cloudUser, onExit }) {
@@ -267,7 +182,6 @@ function LanguageSettings() {
 
 export default function App() {
   const getPage = () => window.location.hash.replace("#", "") || "home";
-<<<<<<< HEAD
   const [page, setPage] = useState(getPage); const [online, setOnline] = useState(navigator.onLine); const [messages, setMessages] = useStoredState("smriti-friend-messages", DEFAULT_MESSAGES); const [activeGame, setActiveGame] = useStoredState("smriti-active-game", null); const [showSos, setShowSos] = useState(false); const [cloudUser, setCloudUser] = useState(null); const [profile, setProfile] = useState(null); const [language, setLanguage] = useState(() => { try { return JSON.parse(localStorage.getItem("smriti-chat-language")) || "en"; } catch { return "en"; } }); const [backendStatus, setBackendStatus] = useState(firebaseConfigured ? "connecting" : "demo");
   useEffect(() => { const route = () => { const nextPage = getPage(); setPage(nextPage); if (nextPage !== "game-room") setActiveGame(null); }; window.addEventListener("hashchange", route); return () => window.removeEventListener("hashchange", route); }, []);
   useEffect(() => { const on = () => setOnline(true); const off = () => setOnline(false); window.addEventListener("online", on); window.addEventListener("offline", off); return () => { window.removeEventListener("online", on); window.removeEventListener("offline", off); }; }, []);
@@ -281,48 +195,3 @@ export default function App() {
   const labels = coreUi(language);
   return <div className="smriti-app"><header className="top-bar"><button className="brand" onClick={() => routeTo("home")}><div className="brand-mark">✦</div><div><h1>smritisetu</h1><span>care recipient interface</span></div></button><div className={`sync-chip ${online ? "online" : ""}`}>{online ? `● ${labels.synced}` : `○ ${labels.offline}`}</div><button className="sos-top" onClick={() => setShowSos(true)} aria-label="Emergency SOS"><span className="sos-icon">SOS</span><span className="sos-text">{labels.sos}</span></button><button className="settings-btn" onClick={() => routeTo("settings")}>⚙ <span>{labels.settings}</span></button></header>{content}<InterfaceTranslator language={language} page={page} /><SpeechButton visible={page === "play-with-friends"} /><BottomNav current={page} labels={labels} />{showSos && <SosModal close={() => setShowSos(false)} />}</div>;
 }
-=======
-  const [page, setPage] = useState(getPage());
-
-  useEffect(() => {
-    const onHashChange = () => setPage(getPage());
-    window.addEventListener("hashchange", onHashChange);
-    return () => window.removeEventListener("hashchange", onHashChange);
-  }, []);
-
-  return (
-    <div className="smriti-app">
-      <header className="top-bar">
-        <div className="brand" onClick={() => navigate("home")}>
-          <div className="brand-mark">✦</div>
-          <div>
-            <h1>smritisetu</h1>
-            <span>care recipient interface</span>
-          </div>
-        </div>
-
-        <button className="sos-top" onClick={() => navigate("sos")} aria-label="Emergency SOS">
-          <span className="sos-icon">SOS</span>
-          <span className="sos-text">I need help</span>
-        </button>
-
-        <button className="settings-btn" onClick={() => navigate("settings")}>
-          ⚙ <span>Settings</span>
-        </button>
-      </header>
-
-      {page === "home" ? (
-        <Home />
-      ) : page === "sos" ? (
-        <SosPage navigate={navigate} />
-      ) : page === "memory" ? (
-        <MemoryPage navigate={navigate} />
-      ) : (
-        <Placeholder page={page} />
-      )}
-
-      <BottomNav current={page} />
-    </div>
-  );
-}
->>>>>>> origin/sos-and-memory
