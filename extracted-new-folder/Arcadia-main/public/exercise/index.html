@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Exercise Time</title>
+<!-- Confetti Library -->
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Inter:wght@400;500;600;700&display=swap');
+
+  :root{
+    --cream:#F5F1E6; --card:#FFFFFF; --ink:#1C2321; --ink-soft:#4B534E; --line:#E4DBC7;
+    --gold:#E8A93B; --gold-soft:#F6E3BE; --coral:#F1552C; --coral-soft:#FBD9CB; 
+    --moss:#4C6B4F; --moss-soft:#D9E3D6; --teal:#3F7C7A; --teal-soft:#D3E4E1;
+    --accent:var(--ink); --accent-soft:var(--line);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:#DFD8C6;
+    font-family:'Inter', sans-serif;
+    display:flex; align-items:center; justify-content:center;
+    min-height:100vh; padding:24px;
+  }
+  h1,h2,h3,.display{ font-family:'Bricolage Grotesque','Inter',sans-serif; }
+
+  .phone{
+    width:390px; max-width:100%; height:800px; max-height:92vh;
+    background:var(--cream); border-radius:36px;
+    box-shadow:0 30px 60px rgba(0,0,0,.25); position:relative;
+    overflow:hidden; display:flex; flex-direction:column;
+  }
+  .screen{
+    position:absolute; inset:0; padding:26px 22px 22px;
+    display:flex; flex-direction:column; opacity:1;
+    transform:translateX(0); overflow-y:auto; transition:opacity .38s ease, transform .38s ease;
+  }
+  .screen::-webkit-scrollbar{display:none;}
+  
+  .phone[data-view="home"] #homeScreen{opacity:1; transform:translateX(0); pointer-events:auto;}
+  .phone[data-view="home"] #workoutScreen{opacity:0; transform:translateX(24px); pointer-events:none;}
+  .phone[data-view="workout"] #workoutScreen{opacity:1; transform:translateX(0); pointer-events:auto;}
+  .phone[data-view="workout"] #homeScreen{opacity:0; transform:translateX(-24px); pointer-events:none;}
+
+  /* ============ FLOATING SOS BUTTON ============ */
+  .sos-btn{
+    position: absolute;
+    top: 24px;
+    right: 22px;
+    width: 52px;
+    height: 52px;
+    background: #D32F2F;
+    color: #FFF;
+    border: 3px solid #FFF;
+    border-radius: 50%;
+    font-family: 'Inter', sans-serif;
+    font-weight: 800;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 16px rgba(211, 47, 47, 0.4);
+    cursor: pointer;
+    z-index: 100;
+    transition: transform 0.15s ease;
+  }
+  .sos-btn:active{ transform: scale(0.9); }
+
+  /* ============ HOME SCREEN ============ */
+  .home-header{ margin-bottom:18px; }
+  .home-nav{
+    display:inline-flex; align-items:center; gap:6px; margin-bottom:18px;
+    color:var(--ink-soft); font-size:13px; font-weight:700; text-decoration:none;
+  }
+  .home-kicker{ font-size:13px; font-weight:600; color:var(--ink-soft); margin:0 0 4px; }
+  .home-title{ font-size:32px; font-weight:800; color:var(--ink); letter-spacing:-.5px; margin:0 0 8px; line-height:1.05; }
+  .home-sub{ font-size:14.5px; color:var(--ink-soft); line-height:1.5; margin:0; max-width:34ch; }
+
+  .routine-btn{
+    margin-top:16px; width:100%; border:none; background:var(--ink); color:var(--cream);
+    font-family:'Bricolage Grotesque',sans-serif; font-size:16px; font-weight:700;
+    padding:16px 18px; border-radius:18px; display:flex; align-items:center; justify-content:space-between; cursor:pointer;
+  }
+  .routine-btn .rb-meta{ font-family:'Inter',sans-serif; font-size:12.5px; font-weight:500; color:#C9C2AE; display:block; margin-top:2px; }
+  .routine-btn .rb-arrow{ width:34px;height:34px; border-radius:50%; background:var(--gold); color:var(--ink); display:flex;align-items:center;justify-content:center; flex:none; font-size:16px; }
+
+  .category-block{margin-top:26px;}
+  .category-heading{ font-size:15px; font-weight:700; color:var(--ink); margin:0 0 4px; }
+  .category-note{ font-size:12.5px; color:var(--ink-soft); margin:0 0 12px; }
+  .card-grid{ display:grid; grid-template-columns:1fr 1fr; gap:10px; padding-bottom: 60px; /* Space for SOS */ }
+  .card-grid.single{grid-template-columns:1fr;}
+  .ex-card{ background:var(--card); border:1px solid var(--line); border-radius:20px; padding:14px; text-align:left; cursor:pointer; display:flex; flex-direction:column; gap:14px; }
+  .ex-card .icon-badge{ width:42px;height:42px; border-radius:13px; background:var(--accent-soft); color:var(--accent); display:flex;align-items:center;justify-content:center; }
+  .ex-card .icon-badge svg{width:22px;height:22px;}
+  .ex-card .ex-name{ font-size:15px; font-weight:700; color:var(--ink); line-height:1.25; }
+  .ex-card .ex-duration{ font-size:12px; font-weight:600; color:var(--accent); margin-top:2px; }
+
+  .cat-warmup{--accent:var(--gold); --accent-soft:var(--gold-soft);}
+  .cat-cardio{--accent:var(--coral); --accent-soft:var(--coral-soft);}
+  .cat-recover{--accent:var(--teal); --accent-soft:var(--teal-soft);}
+
+  /* ============ WORKOUT SCREEN ============ */
+  .wk-topbar{ display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
+  .icon-btn{ width:38px;height:38px; border-radius:50%; border:1px solid var(--line); background:var(--card); display:flex;align-items:center;justify-content:center; cursor:pointer; color:var(--ink); flex:none; }
+  .icon-btn svg{width:18px;height:18px;}
+  .wk-pill{ font-size:12.5px; font-weight:700; color:var(--accent); background:var(--accent-soft); padding:8px 14px; border-radius:20px; transition: opacity 0.3s ease; }
+
+  .progress-row{ display:flex; gap:5px; margin-bottom:16px; transition: opacity 0.3s ease; }
+  .dot{ height:5px; flex:1; border-radius:4px; background:var(--line); overflow:hidden; position:relative; }
+  .dot .fill{ position:absolute;left:0;top:0;bottom:0; width:0%; background:var(--accent); border-radius:4px; transition:width 1s linear; }
+
+  /* VIDEO STAGE */
+  .stage{
+    background:var(--accent-soft); border-radius:26px; height:250px; margin-bottom:16px;
+    position:relative; display:flex; align-items:center; justify-content:center; overflow:hidden;
+  }
+  .stage video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; 
+    background: #000;
+  }
+
+  .exercise-name{ font-size:24px; font-weight:800; color:var(--ink); letter-spacing:-.3px; margin:0 0 6px; }
+  .caption-box{ background:var(--ink); color:#fff; border-radius:18px; padding:16px 18px; font-size:14.5px; line-height:1.45; font-weight:500; margin-bottom:16px; min-height:54px; display:flex; align-items:center; }
+
+  .timer-wrap{ display:flex; align-items:center; justify-content:center; margin-bottom:4px; }
+  .ring{position:relative; width:128px;height:128px;}
+  .ring svg{width:100%;height:100%;transform:rotate(-90deg);}
+  .ring circle{fill:none; stroke-width:11;}
+  .ring .bg{stroke:var(--line);}
+  .ring .fg{stroke:var(--accent); stroke-linecap:round; transition: stroke-dashoffset 1s linear;}
+  .ring-label{position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;}
+  .ring-num{font-size:32px; font-weight:800; color:var(--ink); line-height:1; font-family:'Bricolage Grotesque',sans-serif;}
+  .ring-unit{font-size:10.5px; letter-spacing:.5px; color:var(--ink-soft); margin-top:2px; font-weight:600;}
+
+  .spacer{flex:1;}
+
+  .controls{ background:var(--ink); border-radius:30px; padding:12px 8px; display:flex; align-items:center; justify-content:space-around; margin-top:14px; }
+  .ctrl-btn{ background:none; border:none; color:#cfcfcf; display:flex; flex-direction:column; align-items:center; gap:5px; font-size:10.5px; font-weight:700; cursor:pointer; padding:5px 8px; border-radius:14px; }
+  .ctrl-btn .icon-circle{ width:32px;height:32px; border-radius:50%; display:flex;align-items:center;justify-content:center; font-size:14px; color:#cfcfcf; }
+  .ctrl-btn.primary .icon-circle{background:var(--gold); color:var(--ink);}
+  .ctrl-btn.primary{color:#fff;}
+  .ctrl-btn:disabled{opacity:.35; cursor:not-allowed;}
+
+  /* SINGLE MODE OVERRIDES */
+  .single-mode .progress-row { opacity: 0; pointer-events: none; }
+  .single-mode .wk-pill { opacity: 0; pointer-events: none; }
+  .single-mode #backBtn, .single-mode #nextBtn { visibility: hidden; pointer-events: none; }
+
+  .done-overlay{ position:absolute; inset:0; background:rgba(28,35,33,.94); color:#fff; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:30px; opacity:0; pointer-events:none; transition:opacity .3s ease; z-index: 50; }
+  .done-overlay.show{opacity:1; pointer-events:auto;}
+  .done-overlay h3{font-size:24px; margin:14px 0 6px;}
+  .done-overlay p{font-size:14px; color:#C9C2AE; margin:0 0 22px; max-width:26ch;}
+  .done-overlay button{ border:none; background:var(--gold); color:var(--ink); font-family:'Bricolage Grotesque',sans-serif; font-weight:700; font-size:14.5px; padding:13px 26px; border-radius:16px; cursor:pointer; }
+</style>
+</head>
+<body>
+
+<div class="phone" id="phone" data-view="home">
+  
+  <!-- GLOBAL SOS BUTTON -->
+  <button class="sos-btn" id="sosBtn">SOS</button>
+
+  <!-- HOME SCREEN -->
+  <div class="screen" id="homeScreen">
+    <a class="home-nav" href="/activities" aria-label="Back to Activities">← Back to Activities</a>
+    <div class="home-header">
+      <p class="home-kicker">Exercise Time</p>
+      <h1 class="home-title">Five moves,<br>zero equipment.</h1>
+      <p class="home-sub">Pick a single move to practice, or run the full routine start to finish.</p>
+    </div>
+    <button class="routine-btn" id="startRoutineBtn">
+      <span>Start full routine <span class="rb-meta">5 exercises · 2.5 min total</span></span>
+      <span class="rb-arrow">▶</span>
+    </button>
+    <div id="categoryList"></div>
+  </div>
+
+  <!-- WORKOUT SCREEN -->
+  <div class="screen" id="workoutScreen">
+    <div class="wk-topbar">
+      <button class="icon-btn" id="homeBtn" aria-label="Back to home">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>
+      </button>
+      <div class="wk-pill" id="pillCount">1 of 5</div>
+    </div>
+
+    <div class="progress-row" id="progressRow"></div>
+
+    <div class="stage" id="stage">
+      <video id="exVideo" loop muted playsinline></video>
+    </div>
+
+    <h2 class="exercise-name" id="exName">Sitting Toe Touch</h2>
+    <div class="caption-box" id="captionBox">Sit down with legs extended forward, hinge at the waist, and gently reach towards your toes.</div>
+
+    <div class="timer-wrap">
+      <div class="ring">
+        <svg viewBox="0 0 128 128">
+          <circle class="bg" cx="64" cy="64" r="55"></circle>
+          <circle class="fg" id="ringFg" cx="64" cy="64" r="55"></circle>
+        </svg>
+        <div class="ring-label">
+          <div class="ring-num" id="timeNum">30</div>
+          <div class="ring-unit">seconds</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="spacer"></div>
+
+    <div class="controls">
+      <button class="ctrl-btn" id="backBtn"><span class="icon-circle">←</span> BACK</button>
+      <button class="ctrl-btn primary" id="toggleBtn"><span class="icon-circle" id="toggleIcon">❚❚</span> <span id="toggleLabel">PAUSE</span></button>
+      <button class="ctrl-btn" id="nextBtn"><span class="icon-circle">→</span> NEXT</button>
+    </div>
+
+    <div class="done-overlay" id="doneOverlay">
+      <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="#E8A93B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+      <h3 id="doneTitle">Routine complete</h3>
+      <p id="doneMsg">Nice work — you moved through all five exercises.</p>
+      <button id="doneHomeBtn">Back to home</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const ICONS = {
+  toeTouch: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="16" cy="4.5" r="1.8" fill="currentColor" stroke="none"/><path d="M16 6.3C13 9 9 10 6 10"/><path d="M9 8.5L6 20"/><path d="M9 8.5l6 2 2 9.5"/></svg>`,
+  jumpingJacks: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="4" r="1.8" fill="currentColor" stroke="none"/><path d="M12 8v7"/><path d="M12 8L5 4M12 8l7-4"/><path d="M12 15L6 21M12 15l6 6"/></svg>`,
+  march: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3c1.4 1 1.4 2.6 0 3.4C6.6 5.6 6.6 4 8 3z"/><path d="M8 7v5l-3 3"/><path d="M16 11c1.4 1 1.4 2.6 0 3.4-1.4-.8-1.4-2.4 0-3.4z"/><path d="M16 15v5l3-2"/></svg>`,
+  breathing: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12c2-4 5-4 6 0s4 4 6 0 4-4 6 0"/></svg>`
+};
+
+const EXERCISES = [
+  { key:"sittingToeTouch", name:"Sitting Toe Touch", category:"Warm-up", cat:"warmup", caption:"Sit down with legs extended forward, hinge at the waist, and gently reach towards your toes.", duration:30, icon:ICONS.toeTouch, videoSrc: "toe-touch.mp4" },
+  { key:"jumpingOnSpot", name:"Jumping On Spot", category:"Cardio", cat:"cardio", caption:"Jump lightly on the balls of your feet in one spot, keeping a smooth and steady rhythm.", duration:30, icon:ICONS.jumpingJacks, videoSrc: "jumping.mp4" },
+  { key:"walking", name:"Walking", category:"Cardio", cat:"cardio", caption:"Walk in place at a warm, comfortable pace while gently swinging your arms.", duration:30, icon:ICONS.march, videoSrc: "walking.mp4" },
+  { key:"anulomVilom", name:"Anulom Vilom", category:"Recover", cat:"recover", caption:"Alternate nostril breathing: inhale through one nostril, exhale through the other, and repeat steadily.", duration:30, icon:ICONS.breathing, videoSrc: "anulom-vilom.mp4" },
+  { key:"deepBreathing", name:"Deep Breathing", category:"Recover", cat:"recover", caption:"Inhale deeply expanding your lungs, hold briefly, and exhale slowly to relax your body.", duration:30, icon:ICONS.breathing, videoSrc: "deep-breathing.mp4" }
+];
+
+const CATEGORIES = [
+  {id:"warmup", label:"Warm-up", note:"Wake up the joints before you move fast.", cls:"cat-warmup"},
+  {id:"cardio", label:"Cardio", note:"Get the heart rate up.", cls:"cat-cardio"},
+  {id:"recover", label:"Recover", note:"Stretch it out and slow the breath down.", cls:"cat-recover"}
+];
+
+let current = 0;
+let timeLeft = EXERCISES[0].duration;
+let timerId = null;
+let isPlaying = false;
+let isRoutineMode = true; // State tracker for slide show vs single video
+let transitionTimeout = null; // Tracks our post-confetti pause
+
+const RADIUS = 55;
+const CIRCUM = 2 * Math.PI * RADIUS;
+
+const phone = document.getElementById('phone');
+const categoryList = document.getElementById('categoryList');
+const startRoutineBtn = document.getElementById('startRoutineBtn');
+const workoutScreen = document.getElementById('workoutScreen');
+const stage = document.getElementById('stage');
+const exVideo = document.getElementById('exVideo');
+const exName = document.getElementById('exName');
+const captionBox = document.getElementById('captionBox');
+const pillCount = document.getElementById('pillCount');
+const timeNum = document.getElementById('timeNum');
+const ringFg = document.getElementById('ringFg');
+const progressRow = document.getElementById('progressRow');
+const toggleBtn = document.getElementById('toggleBtn');
+const toggleIcon = document.getElementById('toggleIcon');
+const toggleLabel = document.getElementById('toggleLabel');
+const backBtn = document.getElementById('backBtn');
+const nextBtn = document.getElementById('nextBtn');
+const homeBtn = document.getElementById('homeBtn');
+const doneOverlay = document.getElementById('doneOverlay');
+const doneTitle = document.getElementById('doneTitle');
+const doneMsg = document.getElementById('doneMsg');
+const doneHomeBtn = document.getElementById('doneHomeBtn');
+const sosBtn = document.getElementById('sosBtn');
+
+ringFg.style.strokeDasharray = CIRCUM;
+
+// SOS Button Interaction
+sosBtn.addEventListener('click', () => {
+    window.dispatchEvent(new CustomEvent('smritisetu:sos'));
+});
+
+function buildHome(){
+  categoryList.innerHTML = '';
+  CATEGORIES.forEach(cat => {
+    const items = EXERCISES.map((ex,i) => ({...ex, index:i})).filter(ex => ex.cat === cat.id);
+    if(items.length === 0) return;
+    const block = document.createElement('div');
+    block.className = 'category-block';
+    block.innerHTML = `<h3 class="category-heading">${cat.label}</h3><p class="category-note">${cat.note}</p><div class="card-grid ${items.length === 1 ? 'single' : ''}"></div>`;
+    const grid = block.querySelector('.card-grid');
+    
+    items.forEach(ex => {
+      const card = document.createElement('button');
+      card.className = `ex-card ${cat.cls}`;
+      card.innerHTML = `<span class="icon-badge">${ex.icon}</span><span><span class="ex-name">${ex.name}</span><span class="ex-duration">${ex.duration}s</span></span>`;
+      
+      // When a single exercise is clicked:
+      card.addEventListener('click', () => {
+        isRoutineMode = false;
+        workoutScreen.classList.add('single-mode'); // Hides navigation UI
+        enterWorkout(ex.index);
+      });
+      grid.appendChild(card);
+    });
+    categoryList.appendChild(block);
+  });
+}
+buildHome();
+
+// When start routine is clicked:
+startRoutineBtn.addEventListener('click', () => {
+  isRoutineMode = true;
+  workoutScreen.classList.remove('single-mode'); // Shows navigation UI
+  enterWorkout(0);
+});
+
+function buildDots(){
+  progressRow.innerHTML = '';
+  EXERCISES.forEach(() => {
+    const d = document.createElement('div'); d.className = 'dot'; d.innerHTML = '<div class="fill"></div>'; progressRow.appendChild(d);
+  });
+}
+buildDots();
+
+function updateDots(){
+  if(!isRoutineMode) return; // Save resources if hidden
+  const dots = progressRow.querySelectorAll('.dot');
+  dots.forEach((d,i) => {
+    const fill = d.querySelector('.fill');
+    if(i < current){ fill.style.width = '100%'; }
+    else if(i === current){ fill.style.width = (((EXERCISES[i].duration - timeLeft) / EXERCISES[i].duration) * 100) + '%'; }
+    else { fill.style.width = '0%'; }
+  });
+}
+
+function renderExercise(){
+  const ex = EXERCISES[current];
+  const cat = CATEGORIES.find(c => c.id === ex.cat);
+  
+  pillCount.textContent = `${current+1} of ${EXERCISES.length}`;
+  exName.textContent = ex.name;
+  captionBox.textContent = ex.caption;
+  stage.className = 'stage ' + cat.cls;
+  backBtn.disabled = current === 0;
+  doneOverlay.classList.remove('show');
+  
+  if (exVideo.src !== ex.videoSrc) {
+    exVideo.src = ex.videoSrc;
+  }
+
+  updateDots();
+  updateTimerDisplay();
+}
+
+function updateTimerDisplay(){
+  timeNum.textContent = timeLeft;
+  const ex = EXERCISES[current];
+  ringFg.style.strokeDashoffset = CIRCUM * (1 - ((ex.duration - timeLeft) / ex.duration));
+  updateDots();
+}
+
+function triggerConfetti() {
+  if (typeof confetti === 'function') {
+    confetti({
+      particleCount: 120,
+      spread: 70,
+      origin: { y: 0.6 },
+      zIndex: 1000,
+      colors: ['#E8A93B', '#F1552C', '#4C6B4F', '#3F7C7A', '#FFFFFF']
+    });
+  }
+}
+
+function showDoneOverlay(title, msg) {
+  doneTitle.textContent = title;
+  doneMsg.textContent = msg;
+  doneOverlay.classList.add('show');
+}
+
+function tick(){
+  timeLeft -= 1;
+  
+  if(timeLeft <= 0){
+    timeLeft = 0; 
+    updateTimerDisplay(); 
+    pauseTimer(); 
+    
+    triggerConfetti();
+
+    // Wait 2.5 seconds to enjoy confetti before transitioning
+    transitionTimeout = setTimeout(() => {
+        if(phone.dataset.view !== 'workout') return; // Cancel if user went to home screen
+        
+        if (isRoutineMode) {
+            goNext();
+        } else {
+            showDoneOverlay("Exercise complete", "Great job! You've finished this exercise.");
+        }
+    }, 2500);
+
+    return;
+  }
+  updateTimerDisplay();
+}
+
+function startTimer(){
+  if(timerId || timeLeft === 0) return;
+  isPlaying = true;
+  timerId = setInterval(tick, 1000);
+  exVideo.play();
+  updateToggleUI();
+}
+
+function pauseTimer(){
+  isPlaying = false;
+  clearInterval(timerId);
+  timerId = null;
+  exVideo.pause();
+  updateToggleUI();
+}
+
+function updateToggleUI(){
+  toggleIcon.textContent = isPlaying ? '❚❚' : '▶';
+  toggleLabel.textContent = isPlaying ? 'PAUSE' : 'PLAY';
+}
+
+function clearPendingTransitions() {
+  if(transitionTimeout) {
+      clearTimeout(transitionTimeout);
+      transitionTimeout = null;
+  }
+}
+
+function goTo(index){
+  clearPendingTransitions();
+  pauseTimer();
+  current = Math.max(0, Math.min(EXERCISES.length - 1, index));
+  timeLeft = EXERCISES[current].duration;
+  renderExercise();
+  startTimer();
+}
+
+function goNext(){
+  clearPendingTransitions();
+  if(current < EXERCISES.length - 1){ goTo(current + 1); }
+  else { 
+      pauseTimer(); timeLeft = 0; updateTimerDisplay(); 
+      showDoneOverlay("Routine complete", "Nice work — you moved through all five exercises.");
+  }
+}
+
+function goBack(){ clearPendingTransitions(); if(current > 0) goTo(current - 1); }
+
+function enterWorkout(index){ phone.dataset.view = 'workout'; goTo(index); }
+
+function exitToHome(){ 
+    clearPendingTransitions();
+    pauseTimer(); 
+    phone.dataset.view = 'home'; 
+    doneOverlay.classList.remove('show'); 
+}
+
+toggleBtn.addEventListener('click', () => isPlaying ? pauseTimer() : startTimer());
+backBtn.addEventListener('click', goBack);
+nextBtn.addEventListener('click', goNext);
+homeBtn.addEventListener('click', exitToHome);
+doneHomeBtn.addEventListener('click', exitToHome);
+
+renderExercise();
+pauseTimer();
+</script>
+</body>
+</html>

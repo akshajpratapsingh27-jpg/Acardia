@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Exercise Time</title>
+<style>
+  :root{
+    --cream:#F7F3EA;
+    --card:#EDE9DF;
+    --ink:#141414;
+    --navy:#1E2A4A;
+    --gold:#F2B93B;
+    --tan:#D9BE94;
+    --peach:#EAD3AE;
+    --sand:#E8D6B0;
+    --sky:#CFE1E0;
+    --grey:#8A8578;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:#DDD6C4;
+    font-family:'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Arial, sans-serif;
+    display:flex; align-items:center; justify-content:center;
+    min-height:100vh; padding:24px;
+  }
+  .phone{
+    width:390px; max-width:100%; height:820px; max-height:94vh;
+    background:var(--cream); border-radius:36px;
+    box-shadow:0 30px 60px rgba(0,0,0,.25);
+    position:relative; overflow:hidden; display:flex; flex-direction:column;
+  }
+
+  /* ---------- Screens ---------- */
+  .screen{
+    position:absolute; inset:0; padding:26px 22px 22px; overflow-y:auto;
+    opacity:0; transform:translateX(24px); pointer-events:none;
+    transition:opacity .38s ease, transform .38s cubic-bezier(.22,1,.36,1);
+  }
+  .screen.active{ opacity:1; transform:translateX(0); pointer-events:auto; }
+  .screen::-webkit-scrollbar{width:0;}
+
+  .top-row{ display:flex; align-items:center; gap:12px; margin-bottom:18px; }
+  .back-chip{
+    width:38px;height:38px;border-radius:50%;background:var(--card);border:none;
+    display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--ink);
+    cursor:pointer;flex:none;transition:transform .15s ease;
+  }
+  .back-chip:active{transform:scale(.88);}
+  .top-title{ font-size:22px; font-weight:800; color:var(--ink); letter-spacing:-.3px; }
+  .top-sub{ font-size:13px; color:var(--grey); font-weight:600; margin-top:1px; }
+
+  /* ===== HOME ===== */
+  .greeting{ font-size:15px; color:var(--grey); font-weight:600; margin-bottom:2px; }
+  .greeting-title{ font-size:28px; font-weight:800; color:var(--ink); letter-spacing:-.5px; margin-bottom:20px; }
+  .resume-card{
+    background:var(--ink); color:#fff; border-radius:22px; padding:16px 18px;
+    display:flex; align-items:center; gap:14px; margin-bottom:22px; cursor:pointer; border:none; width:100%;
+  }
+  .resume-icon{ width:44px;height:44px;border-radius:14px;background:var(--gold);
+    display:flex;align-items:center;justify-content:center;font-size:20px;flex:none;
+    animation:gentlePulse 2.4s ease-in-out infinite; }
+  @keyframes gentlePulse{0%,100%{transform:scale(1);}50%{transform:scale(1.1);}}
+  .resume-text .label{font-size:11px;letter-spacing:.6px;color:#c9c9c9;font-weight:700;text-transform:uppercase;}
+  .resume-text .name{font-size:16px;font-weight:700;margin-top:2px;}
+  .category-grid{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  .category-card{
+    background:var(--card); border-radius:22px; padding:18px 16px; cursor:pointer; border:none; text-align:left;
+    display:flex; flex-direction:column; gap:10px; transition:transform .18s cubic-bezier(.34,1.56,.64,1);
+  }
+  .category-card:active{transform:scale(.95);}
+  .category-icon{ width:52px;height:52px;border-radius:16px;display:flex;align-items:center;justify-content:center; }
+  .category-icon svg{width:30px;height:30px;}
+  .category-name{ font-size:17px; font-weight:800; color:var(--ink); letter-spacing:-.2px; }
+  .category-count{ font-size:12.5px; color:var(--grey); font-weight:600; }
+
+  /* ===== CATEGORY LIST ===== */
+  .exercise-list{ display:flex; flex-direction:column; gap:12px; }
+  .exercise-row{
+    background:var(--card); border:none; border-radius:20px; padding:14px 16px;
+    display:flex; align-items:center; gap:14px; cursor:pointer; text-align:left; transition:transform .15s ease;
+  }
+  .exercise-row:active{transform:scale(.97);}
+  .exercise-row-icon{ width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;flex:none; }
+  .exercise-row-icon svg{width:26px;height:26px;}
+  .exercise-row-text .ename{font-size:15.5px;font-weight:800;color:var(--ink);}
+  .exercise-row-text .edur{font-size:12.5px;color:var(--grey);font-weight:600;margin-top:2px;}
+  .exercise-row-arrow{margin-left:auto;color:var(--grey);font-size:16px;}
+
+  /* ===== DETAIL / PLAYER ===== */
+  .exercise-pill{ background:var(--card); color:var(--ink); font-size:12.5px; font-weight:700;
+    padding:8px 14px; border-radius:20px; white-space:nowrap; margin-left:auto; }
+  .stage{
+    border-radius:26px; margin-bottom:14px; height:300px; position:relative; overflow:hidden;
+    transition:background .4s ease; display:flex; align-items:center; justify-content:center;
+  }
+  /* enlarged so the limb rotations read clearly instead of looking like a
+     tiny twitch — bigger figure = bigger on-screen travel for the same
+     rotation angle */
+  .stage-figure{ width:92%; height:100%; }
+  .phase-label{
+    position:absolute; top:14px; left:14px; background:rgba(20,20,20,.78); color:#fff;
+    font-size:11px; font-weight:700; letter-spacing:.4px; padding:6px 12px; border-radius:14px;
+  }
+  .exercise-name{ font-size:24px; font-weight:800; color:var(--ink); letter-spacing:-.4px; margin:0 0 4px; }
+  .caption-box{
+    background:var(--ink); color:#fff; border-radius:18px; padding:14px 16px; font-size:14.5px;
+    line-height:1.4; font-weight:600; margin-bottom:14px; min-height:52px; display:flex; align-items:center;
+  }
+
+  .footer-bar{
+    position:absolute; left:0; right:0; bottom:0; height:60px;
+    background:var(--ink); display:flex; align-items:center; gap:10px;
+    padding:0 16px; z-index:30;
+  }
+  .lang-select{
+    flex:1; border:none; background:#2a2a2a; color:#fff; border-radius:12px; padding:9px 12px;
+    font-size:13px; font-weight:600; appearance:none;
+  }
+  .lang-select option{ color:#000; }
+  .footer-icon-btn{
+    border:none; background:var(--gold); color:var(--ink); width:38px;height:38px;border-radius:50%;
+    font-size:15px; cursor:pointer; flex:none; display:flex; align-items:center; justify-content:center;
+    transition:transform .15s ease, background .2s ease;
+  }
+  .footer-icon-btn.speaking{ background:#b23b3b; color:#fff; }
+  .footer-icon-btn:active{ transform:scale(.9); }
+
+  .screen{ padding-bottom:78px; }
+
+  .sos-btn{
+    position:absolute; top:18px; right:18px; z-index:40;
+    width:46px; height:46px; border-radius:50%; border:none;
+    background:#D6392B; color:#fff; font-size:12px; font-weight:800; letter-spacing:.4px;
+    cursor:pointer; display:flex; align-items:center; justify-content:center;
+    box-shadow:0 4px 10px rgba(214,57,43,.4);
+  }
+  .sos-btn::after{
+    content:''; position:absolute; inset:-6px; border-radius:50%;
+    border:2px solid #D6392B; animation:sosPulse 1.8s ease-out infinite;
+  }
+  @keyframes sosPulse{
+    0%{ transform:scale(.85); opacity:.8; }
+    100%{ transform:scale(1.35); opacity:0; }
+  }
+  .sos-btn:active{ transform:scale(.92); }
+
+  .sos-overlay{
+    position:absolute; inset:0; background:rgba(15,15,15,.6);
+    display:none; align-items:center; justify-content:center; z-index:50; padding:30px;
+  }
+  .sos-overlay.open{ display:flex; }
+  .sos-card{
+    background:#fff; border-radius:22px; padding:24px 22px; text-align:center; width:100%;
+  }
+  .sos-card h3{ margin:0 0 8px; font-size:19px; color:var(--ink); }
+  .sos-card p{ margin:0 0 18px; font-size:13.5px; color:var(--grey); line-height:1.5; }
+  .sos-actions{ display:flex; flex-direction:column; gap:10px; }
+  .sos-call{
+    border:none; background:#D6392B; color:#fff; font-weight:800; font-size:15px;
+    padding:13px; border-radius:14px; cursor:pointer; text-decoration:none;
+  }
+  .sos-cancel{
+    border:none; background:var(--card); color:var(--ink); font-weight:700; font-size:14px;
+    padding:12px; border-radius:14px; cursor:pointer;
+  }
+
+  .timer-wrap{ display:flex; align-items:center; justify-content:center; margin-bottom:4px; }
+  .ring{ position:relative; width:130px;height:130px; }
+  .ring svg{width:100%;height:100%;transform:rotate(-90deg);}
+  .ring circle{fill:none; stroke-width:11;}
+  .ring .bg{stroke:var(--card);}
+  .ring .fg{stroke:var(--ink); stroke-linecap:round; transition:stroke-dashoffset .95s linear;}
+  .ring-label{position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;}
+  .ring-num{font-size:32px;font-weight:800;color:var(--ink);line-height:1;}
+  .ring-unit{font-size:10px;letter-spacing:1px;color:var(--grey);margin-top:2px;text-transform:uppercase;font-weight:700;}
+  .remaining-label{text-align:center;color:var(--grey);font-weight:700;letter-spacing:1px;font-size:11px;text-transform:uppercase;margin:4px 0 12px;}
+
+  .controls{
+    background:var(--ink); border-radius:32px; padding:12px 8px; display:flex;
+    align-items:center; justify-content:space-around; margin-top:auto;
+  }
+  .ctrl-btn{
+    background:none;border:none;color:#cfcfcf;display:flex;flex-direction:column;align-items:center;gap:5px;
+    font-size:10px;font-weight:700;letter-spacing:.5px;cursor:pointer;padding:5px 8px;border-radius:16px;
+    transition:transform .15s ease,color .2s ease;
+  }
+  .ctrl-btn:active{transform:scale(.9);}
+  .ctrl-btn .icon-circle{
+    width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    font-size:14px;color:#cfcfcf;transition:background .25s ease,color .25s ease,transform .25s ease;
+  }
+  .ctrl-btn.active .icon-circle{background:var(--gold);color:var(--ink);transform:scale(1.1);}
+  .ctrl-btn.active{color:#fff;}
+  .ctrl-btn:disabled{opacity:.35;cursor:not-allowed;}
+
+  .fig-svg{overflow:visible;}
+  .limbStroke{stroke:var(--navy); stroke-linecap:round; fill:none;}
+  .upperLimb{stroke-width:14;}
+  .lowerLimb{stroke-width:11;}
+  .joint{fill:#0f1620; stroke:var(--navy); stroke-width:2;}
+  .hand,.foot{fill:var(--gold);}
+  .foot{stroke:#0f1620; stroke-width:1;}
+  .torsoShape{fill:var(--navy); opacity:.92;}
+  .headShape{fill:var(--navy); opacity:.92;}
+  .pupil{fill:var(--cream);}
+  .shadow{fill:#000; opacity:.08; transform-origin:120px 254px;}
+  .figGroup{transform-origin:120px 150px;}
+  .fig-svg *{ animation-timing-function: cubic-bezier(.45,0,.4,1); }
+
+  .pose-seated .thighL{transform:rotate(-34deg); transform-origin:108px 150px;}
+  .pose-seated .thighR{transform:rotate(34deg); transform-origin:132px 150px;}
+  .pose-seated .shinL{transform:rotate(72deg); transform-origin:108px 190px;}
+  .pose-seated .shinR{transform:rotate(-72deg); transform-origin:132px 190px;}
+
+  .anim-breathe .figGroup{ animation:br-body 4s infinite; }
+  .anim-breathe .shadow{ animation:br-shadow 4s infinite; }
+  .anim-breathe .upperArmL{ animation:br-armL 4s infinite; transform-origin:96px 72px; }
+  .anim-breathe .upperArmR{ animation:br-armR 4s infinite; transform-origin:144px 72px; }
+  .anim-breathe .forearmL{ animation:br-farmL 4s infinite; transform-origin:66px 96px; }
+  .anim-breathe .forearmR{ animation:br-farmR 4s infinite; transform-origin:174px 96px; }
+  .anim-breathe .headWrap{ animation:br-head 4s infinite; transform-origin:120px 61px; }
+  @keyframes br-body{0%,100%{transform:translateY(0) scale(1);}50%{transform:translateY(-7px) scale(1.06);}}
+  @keyframes br-shadow{0%,100%{transform:scale(1);opacity:.08;}50%{transform:scale(1.08);opacity:.12;}}
+  @keyframes br-armL{0%,100%{transform:rotate(6deg);}50%{transform:rotate(-34deg);}}
+  @keyframes br-armR{0%,100%{transform:rotate(-6deg);}50%{transform:rotate(34deg);}}
+  @keyframes br-farmL{0%,100%{transform:rotate(8deg);}50%{transform:rotate(-16deg);}}
+  @keyframes br-farmR{0%,100%{transform:rotate(-8deg);}50%{transform:rotate(16deg);}}
+  @keyframes br-head{0%,100%{transform:translateY(0);}50%{transform:translateY(-4px);}}
+
+  .anim-anulom .figGroup{ animation:br-body 6s infinite; }
+  .anim-anulom .shadow{ animation:br-shadow 6s infinite; }
+  .anim-anulom .headWrap{ animation:br-head 6s infinite; transform-origin:120px 61px; }
+  .anim-anulom .upperArmR{ animation:ao-uArmR 6s infinite; transform-origin:144px 72px; }
+  .anim-anulom .forearmR{ animation:ao-fArmR 6s infinite; transform-origin:174px 96px; }
+  @keyframes ao-uArmR{0%,16%{transform:rotate(-4deg);}40%,60%{transform:rotate(-48deg);}84%,100%{transform:rotate(-4deg);}}
+  @keyframes ao-fArmR{0%,16%{transform:rotate(0deg);}40%,60%{transform:rotate(-128deg);}84%,100%{transform:rotate(0deg);}}
+
+  .anim-meditate .figGroup{ animation:me-sway 5s infinite; }
+  .anim-meditate .shadow{ animation:br-shadow 5s infinite; }
+  .anim-meditate .headWrap{ animation:me-head 5s infinite; transform-origin:120px 61px; }
+  .anim-meditate .upperArmL{ transform:rotate(15deg); transform-origin:96px 72px; }
+  .anim-meditate .upperArmR{ transform:rotate(-15deg); transform-origin:144px 72px; }
+  .anim-meditate .forearmL{ transform:rotate(-20deg); transform-origin:66px 96px; }
+  .anim-meditate .forearmR{ transform:rotate(20deg); transform-origin:174px 96px; }
+  @keyframes me-sway{0%,100%{transform:translateY(0) rotate(0deg);}50%{transform:translateY(-6px) rotate(1.4deg);}}
+  @keyframes me-head{0%,100%{transform:rotate(0deg);}50%{transform:rotate(-3deg);}}
+
+  .anim-stretch .figGroup{ animation:st-body 3.2s infinite; }
+  .anim-stretch .shadow{ animation:st-shadow 3.2s infinite; }
+  .anim-stretch .headWrap{ animation:st-head 3.2s infinite; transform-origin:120px 61px; }
+  .anim-stretch .upperArmL{ animation:st-armL 3.2s infinite; transform-origin:96px 72px; }
+  .anim-stretch .forearmL{ animation:st-farmL 3.2s infinite; transform-origin:66px 96px; }
+  .anim-stretch .upperArmR{ animation:st-armR 3.2s infinite; transform-origin:144px 72px; }
+  .anim-stretch .forearmR{ animation:st-farmR 3.2s infinite; transform-origin:174px 96px; }
+  @keyframes st-body{0%,20%,100%{transform:translate(0,0) scale(1);}55%,80%{transform:translate(0,-8px) scale(1.03);}}
+  @keyframes st-shadow{0%,20%,100%{transform:scale(1);opacity:.08;}55%,80%{transform:scale(.88);opacity:.05;}}
+  @keyframes st-head{0%,20%,100%{transform:rotate(0deg);}55%,80%{transform:rotate(-4deg);}}
+  @keyframes st-armL{0%,20%,100%{transform:rotate(4deg);}55%,80%{transform:rotate(-142deg);}}
+  @keyframes st-farmL{0%,20%,100%{transform:rotate(6deg);}55%,80%{transform:rotate(-6deg);}}
+  @keyframes st-armR{0%,20%,100%{transform:rotate(-4deg);}55%,80%{transform:rotate(142deg);}}
+  @keyframes st-farmR{0%,20%,100%{transform:rotate(-6deg);}55%,80%{transform:rotate(6deg);}}
+
+  .anim-eyeroll .figGroup{ animation:br-body 4s infinite; }
+  .anim-eyeroll .shadow{ animation:br-shadow 4s infinite; }
+  .anim-eyeroll .pupilL, .anim-eyeroll .pupilR{ animation:ey-orbit 3.5s linear infinite; transform-box:fill-box; transform-origin:center; }
+  @keyframes ey-orbit{
+    0%{transform:translate(0,0);}
+    25%{transform:translate(2.5px,-2px);}
+    50%{transform:translate(0,-3px);}
+    75%{transform:translate(-2.5px,-2px);}
+    100%{transform:translate(0,0);}
+  }
+
+  .anim-walk .figGroup{ animation:wk-body 1.1s infinite; }
+  .anim-walk .shadow{ animation:wk-shadow 1.1s infinite; }
+  .anim-walk .thighL{ animation:wk-thighL 1.1s infinite; transform-origin:108px 150px; }
+  .anim-walk .thighR{ animation:wk-thighR 1.1s infinite; transform-origin:132px 150px; }
+  .anim-walk .shinL{ animation:wk-shinL 1.1s infinite; transform-origin:108px 190px; }
+  .anim-walk .shinR{ animation:wk-shinR 1.1s infinite; transform-origin:132px 190px; }
+  .anim-walk .upperArmL{ animation:wk-armL 1.1s infinite; transform-origin:96px 72px; }
+  .anim-walk .upperArmR{ animation:wk-armR 1.1s infinite; transform-origin:144px 72px; }
+  .anim-walk .headWrap{ animation:wk-head 1.1s infinite; transform-origin:120px 61px; }
+  @keyframes wk-body{0%,50%,100%{transform:translateY(0);}25%,75%{transform:translateY(-6px);}}
+  @keyframes wk-shadow{0%,50%,100%{transform:scale(1);opacity:.08;}25%,75%{transform:scale(.88);opacity:.05;}}
+  @keyframes wk-thighL{0%,100%{transform:rotate(22deg);}50%{transform:rotate(-22deg);}}
+  @keyframes wk-thighR{0%,100%{transform:rotate(-22deg);}50%{transform:rotate(22deg);}}
+  @keyframes wk-shinL{0%,100%{transform:rotate(0deg);}50%{transform:rotate(26deg);}}
+  @keyframes wk-shinR{0%,100%{transform:rotate(0deg);}50%{transform:rotate(-26deg);}}
+  @keyframes wk-armL{0%,100%{transform:rotate(-20deg);}50%{transform:rotate(20deg);}}
+  @keyframes wk-armR{0%,100%{transform:rotate(20deg);}50%{transform:rotate(-20deg);}}
+  @keyframes wk-head{0%,50%,100%{transform:translateY(0);}25%,75%{transform:translateY(-1px);}}
+
+  @media (prefers-reduced-motion: reduce){
+    .fig-svg *{animation:none !important;}
+  }
+</style>
+</head>
+<body>
+
+<div class="phone" id="phone">
+
+  <!-- ============ HOME ============ -->
+  <section class="screen active" id="screen-home">
+    <div class="greeting">Good morning, Anita</div>
+    <div class="greeting-title">Let's move today</div>
+    <button class="resume-card" id="resumeCard">
+      <div class="resume-icon">↻</div>
+      <div class="resume-text">
+        <div class="label">Continue</div>
+        <div class="name" id="resumeName">Breathe In Breathe Out</div>
+      </div>
+    </button>
+    <div class="category-grid" id="categoryGrid"></div>
+  </section>
+
+  <!-- ============ CATEGORY LIST ============ -->
+  <section class="screen" id="screen-category">
+    <div class="top-row">
+      <button class="back-chip" id="catBack">←</button>
+      <div>
+        <div class="top-title" id="catTitle">Breathing</div>
+        <div class="top-sub" id="catSub">2 exercises</div>
+      </div>
+    </div>
+    <div class="exercise-list" id="exerciseList"></div>
+  </section>
+
+  <!-- ============ DETAIL / PLAYER ============ -->
+  <section class="screen" id="screen-detail" style="display:flex; flex-direction:column;">
+    <div class="top-row">
+      <button class="back-chip" id="detBack">←</button>
+      <div><div class="top-title" id="detCatName" style="font-size:15px;">Stretching</div></div>
+      <div class="exercise-pill" id="pillCount">1 of 2</div>
+    </div>
+
+    <div class="stage" id="stage">
+      <div class="phase-label" id="phaseLabel">Reach up</div>
+      <svg class="stage-figure fig-svg" id="figureSvg" viewBox="0 0 240 280">
+        <ellipse class="shadow" cx="120" cy="254" rx="46" ry="9"/>
+        <g class="figGroup">
+          <g class="thighL">
+            <line class="limbStroke upperLimb" x1="108" y1="150" x2="108" y2="190"/>
+            <g class="shinL">
+              <line class="limbStroke lowerLimb" x1="108" y1="190" x2="108" y2="228"/>
+              <ellipse class="foot" cx="108" cy="231" rx="10" ry="5"/>
+            </g>
+            <circle class="joint" cx="108" cy="190" r="4.5"/>
+          </g>
+          <g class="thighR">
+            <line class="limbStroke upperLimb" x1="132" y1="150" x2="132" y2="190"/>
+            <g class="shinR">
+              <line class="limbStroke lowerLimb" x1="132" y1="190" x2="132" y2="228"/>
+              <ellipse class="foot" cx="132" cy="231" rx="10" ry="5"/>
+            </g>
+            <circle class="joint" cx="132" cy="190" r="4.5"/>
+          </g>
+          <circle class="joint" cx="108" cy="150" r="4.5"/>
+          <circle class="joint" cx="132" cy="150" r="4.5"/>
+
+          <path class="torsoShape" d="M96,72 Q120,64 144,72 L132,150 Q120,157 108,150 Z"/>
+
+          <g class="upperArmL">
+            <line class="limbStroke upperLimb" x1="96" y1="72" x2="66" y2="96"/>
+            <g class="forearmL">
+              <line class="limbStroke lowerLimb" x1="66" y1="96" x2="52" y2="128"/>
+              <circle class="hand" cx="50" cy="132" r="6"/>
+            </g>
+            <circle class="joint" cx="66" cy="96" r="4.5"/>
+          </g>
+          <g class="upperArmR">
+            <line class="limbStroke upperLimb" x1="144" y1="72" x2="174" y2="96"/>
+            <g class="forearmR">
+              <line class="limbStroke lowerLimb" x1="174" y1="96" x2="188" y2="128"/>
+              <circle class="hand" cx="190" cy="132" r="6"/>
+            </g>
+            <circle class="joint" cx="174" cy="96" r="4.5"/>
+          </g>
+          <circle class="joint" cx="96" cy="72" r="4.5"/>
+          <circle class="joint" cx="144" cy="72" r="4.5"/>
+
+          <g class="headWrap">
+            <line class="limbStroke" x1="120" y1="61" x2="120" y2="70" stroke-width="8"/>
+            <circle class="headShape" cx="120" cy="46" r="16"/>
+            <circle class="pupil pupilL" cx="114" cy="44" r="2.2"/>
+            <circle class="pupil pupilR" cx="126" cy="44" r="2.2"/>
+          </g>
+        </g>
+      </svg>
+    </div>
+
+    <h2 class="exercise-name" id="exName">Reach Up</h2>
+    <div class="caption-box" id="captionBox">Reach up high and hold the stretch.</div>
+
+    <div class="timer-wrap">
+      <div class="ring">
+        <svg viewBox="0 0 130 130">
+          <circle class="bg" cx="65" cy="65" r="57"></circle>
+          <circle class="fg" id="ringFg" cx="65" cy="65" r="57"></circle>
+        </svg>
+        <div class="ring-label">
+          <div class="ring-num" id="timeNum">30</div>
+          <div class="ring-unit">seconds</div>
+        </div>
+      </div>
+    </div>
+    <div class="remaining-label">Remaining</div>
+
+    <div class="controls">
+      <button class="ctrl-btn" id="backBtn"><span class="icon-circle">←</span>BACK</button>
+      <button class="ctrl-btn" id="pauseBtn"><span class="icon-circle">❚❚</span>PAUSE</button>
+      <button class="ctrl-btn" id="playBtn"><span class="icon-circle">▶</span>PLAY</button>
+      <button class="ctrl-btn" id="nextBtn"><span class="icon-circle">→</span>NEXT</button>
+    </div>
+  </section>
+
+  <button class="sos-btn" id="sosBtn">SOS</button>
+  <div class="sos-overlay" id="sosOverlay">
+    <div class="sos-card">
+      <h3>Need help?</h3>
+      <p>This will call your emergency contact. Only continue if you need assistance right now.</p>
+      <div class="sos-actions">
+        <a class="sos-call" href="tel:108" id="sosCallLink">📞 Call for Help</a>
+        <button class="sos-cancel" id="sosCancel">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-bar">
+    <select class="lang-select" id="langSelect" title="Choose a language for Read Aloud"></select>
+    <button class="footer-icon-btn" id="speakToggleBtn" title="Read the current screen aloud">🔊</button>
+  </div>
+
+</div>
+
+<script>
+const CATEGORIES = [
+  {
+    id:'breathing', name:'Breathing', bg:'var(--peach)',
+    icon:`<svg viewBox="0 0 24 24" fill="none" stroke="#1E2A4A" stroke-width="2"><path d="M6 20v-4a2 2 0 012-2h2M18 20v-4a2 2 0 00-2-2h-2M12 4a3 3 0 100 6 3 3 0 000-6z"/></svg>`,
+    exercises:[
+      { name:'Breathe In Breathe Out', caption:'Sit comfortably and take deep, slow breaths.',
+        duration:30, animClass:'anim-breathe', seated:true, phase:'Breathing' },
+      { name:'Anulom Vilom', caption:'Breathe slowly through one nostril at a time.',
+        duration:30, animClass:'anim-anulom', seated:true, phase:'Alternate breath' }
+    ]
+  },
+  {
+    id:'meditation', name:'Meditation', bg:'var(--tan)',
+    icon:`<svg viewBox="0 0 24 24" fill="none" stroke="#1E2A4A" stroke-width="2"><circle cx="12" cy="7" r="3"/><path d="M5 20c0-4 3-6 7-6s7 2 7 6"/></svg>`,
+    exercises:[
+      { name:'Meditation', caption:'Close your eyes and clear your mind.',
+        duration:30, animClass:'anim-meditate', seated:true, phase:'Stillness' }
+    ]
+  },
+  {
+    id:'stretching', name:'Stretching', bg:'var(--sky)',
+    icon:`<svg viewBox="0 0 24 24" fill="none" stroke="#1E2A4A" stroke-width="2"><path d="M12 4v6M12 10l-5 3M12 10l5 3M9 21l3-8 3 8"/></svg>`,
+    exercises:[
+      { name:'Reach Up', caption:'Reach up high and hold the stretch.',
+        duration:30, animClass:'anim-stretch', seated:false, phase:'Reach up' },
+      { name:'Eye Roll', caption:'Gently roll your eyes in a slow circle.',
+        duration:28, animClass:'anim-eyeroll', seated:false, phase:'Eye circles' }
+    ]
+  },
+  {
+    id:'walking', name:'Walking', bg:'var(--sand)',
+    icon:`<svg viewBox="0 0 24 24" fill="none" stroke="#1E2A4A" stroke-width="2"><circle cx="13" cy="4" r="1.6" fill="#1E2A4A"/><path d="M11 8l-1 5 3 2 1 6M10 13l-4 2M14 8l3 3-1 5 3 3"/></svg>`,
+    exercises:[
+      { name:'Walk', caption:'Walk slowly and steadily in place.',
+        duration:30, animClass:'anim-walk', seated:false, phase:'Slow steps' }
+    ]
+  }
+];
+
+const NE_LANGUAGES = [
+  { tag:'en-IN',  label:'English (India)' },
+  { tag:'as-IN',  label:'Assamese · অসমীয়া' },
+  { tag:'bn-IN',  label:'Bengali · বাংলা (widely spoken in Tripura/Barak Valley)' },
+  { tag:'mni-IN', label:'Manipuri (Meitei) · মৈতৈলোন্' },
+  { tag:'kha',    label:'Khasi' },
+  { tag:'lus',    label:'Mizo · Mizo ṭawng' },
+  { tag:'nag',    label:'Nagamese' },
+  { tag:'brx-IN', label:'Bodo · बड़ो' },
+  { tag:'hi-IN',  label:'Hindi (fallback for Nagamese/Bodo-adjacent voices)' }
+];
+
+let activeCategory = null, activeExerciseIndex = 0;
+let timeLeft = 30, timerId = null, isPlaying = false;
+const RADIUS = 57, CIRCUM = 2*Math.PI*RADIUS;
+
+const screens = {
+  home: document.getElementById('screen-home'),
+  category: document.getElementById('screen-category'),
+  detail: document.getElementById('screen-detail')
+};
+function showScreen(name){
+  Object.values(screens).forEach(s=>s.classList.remove('active'));
+  screens[name].classList.add('active');
+}
+
+const categoryGrid = document.getElementById('categoryGrid');
+CATEGORIES.forEach(cat=>{
+  const card = document.createElement('button');
+  card.className = 'category-card';
+  card.innerHTML = `
+    <div class="category-icon" style="background:${cat.bg}">${cat.icon}</div>
+    <div class="category-name">${cat.name}</div>
+    <div class="category-count">${cat.exercises.length} exercise${cat.exercises.length>1?'s':''}</div>`;
+  card.addEventListener('click', ()=>openCategory(cat));
+  categoryGrid.appendChild(card);
+});
+document.getElementById('resumeCard').addEventListener('click', ()=>{
+  openCategory(CATEGORIES[0]);
+  setTimeout(()=>openDetail(CATEGORIES[0], 0), 380);
+});
+
+const exerciseList = document.getElementById('exerciseList');
+function openCategory(cat){
+  activeCategory = cat;
+  document.getElementById('catTitle').textContent = cat.name;
+  document.getElementById('catSub').textContent = `${cat.exercises.length} exercise${cat.exercises.length>1?'s':''}`;
+  exerciseList.innerHTML = '';
+  cat.exercises.forEach((ex,i)=>{
+    const row = document.createElement('button');
+    row.className = 'exercise-row';
+    row.innerHTML = `
+      <div class="exercise-row-icon" style="background:${cat.bg}">${cat.icon}</div>
+      <div class="exercise-row-text">
+        <div class="ename">${ex.name}</div>
+        <div class="edur">${ex.duration}s · ${ex.phase}</div>
+      </div>
+      <div class="exercise-row-arrow">→</div>`;
+    row.addEventListener('click', ()=>openDetail(cat,i));
+    exerciseList.appendChild(row);
+  });
+  showScreen('category');
+}
+document.getElementById('catBack').addEventListener('click', ()=>showScreen('home'));
+document.getElementById('detBack').addEventListener('click', ()=>{ pauseTimer(); stopSpeaking(); showScreen('category'); });
+
+const stage = document.getElementById('stage');
+const figureSvg = document.getElementById('figureSvg');
+const phaseLabel = document.getElementById('phaseLabel');
+const exName = document.getElementById('exName');
+const captionBox = document.getElementById('captionBox');
+const pillCount = document.getElementById('pillCount');
+const detCatName = document.getElementById('detCatName');
+const timeNum = document.getElementById('timeNum');
+const ringFg = document.getElementById('ringFg');
+const playBtn = document.getElementById('playBtn');
+const pauseBtn = document.getElementById('pauseBtn');
+const backBtn = document.getElementById('backBtn');
+const nextBtn = document.getElementById('nextBtn');
+ringFg.style.strokeDasharray = CIRCUM;
+
+function openDetail(cat, index){
+  activeCategory = cat; activeExerciseIndex = index;
+  pauseTimer(); stopSpeaking();
+  renderDetail();
+  showScreen('detail');
+  startTimer();
+}
+function renderDetail(){
+  const cat = activeCategory, ex = cat.exercises[activeExerciseIndex];
+  timeLeft = ex.duration;
+  detCatName.textContent = cat.name;
+  pillCount.textContent = `${activeExerciseIndex+1} of ${cat.exercises.length}`;
+  stage.style.background = cat.bg;
+  phaseLabel.textContent = ex.phase;
+  exName.textContent = ex.name;
+  captionBox.textContent = ex.caption;
+
+  figureSvg.setAttribute('class', 'stage-figure fig-svg ' + ex.animClass + (ex.seated ? ' pose-seated' : ''));
+
+  ringFg.style.strokeDashoffset = 0;
+  updateTimerDisplay();
+  updatePlayPauseUI();
+}
+function updateTimerDisplay(){
+  const ex = activeCategory.exercises[activeExerciseIndex];
+  timeNum.textContent = timeLeft;
+  const progress = (ex.duration - timeLeft) / ex.duration;
+  ringFg.style.strokeDashoffset = CIRCUM * (1 - progress);
+}
+function tick(){
+  timeLeft -= 1;
+  if(timeLeft <= 0){ timeLeft = 0; updateTimerDisplay(); goNext(); return; }
+  updateTimerDisplay();
+}
+function startTimer(){
+  if(timerId) return;
+  isPlaying = true;
+  figureSvg.style.animationPlayState = 'running';
+  figureSvg.querySelectorAll('*').forEach(el=>el.style.animationPlayState='running');
+  timerId = setInterval(tick, 1000);
+  updatePlayPauseUI();
+}
+function pauseTimer(){
+  isPlaying = false;
+  figureSvg.style.animationPlayState = 'paused';
+  figureSvg.querySelectorAll('*').forEach(el=>el.style.animationPlayState='paused');
+  clearInterval(timerId); timerId = null;
+  updatePlayPauseUI();
+}
+function updatePlayPauseUI(){
+  playBtn.classList.toggle('active', isPlaying);
+  pauseBtn.classList.toggle('active', !isPlaying);
+  backBtn.disabled = activeExerciseIndex === 0;
+}
+function goNext(){
+  const cat = activeCategory;
+  if(activeExerciseIndex < cat.exercises.length-1){
+    activeExerciseIndex++; pauseTimer(); stopSpeaking(); renderDetail(); startTimer();
+  } else { pauseTimer(); timeLeft = 0; updateTimerDisplay(); }
+}
+function goBack(){
+  if(activeExerciseIndex > 0){
+    activeExerciseIndex--; pauseTimer(); stopSpeaking(); renderDetail(); startTimer();
+  }
+}
+playBtn.addEventListener('click', startTimer);
+pauseBtn.addEventListener('click', pauseTimer);
+nextBtn.addEventListener('click', goNext);
+backBtn.addEventListener('click', goBack);
+
+const langSelect = document.getElementById('langSelect');
+const speakToggleBtn = document.getElementById('speakToggleBtn');
+
+NE_LANGUAGES.forEach(l=>{
+  const opt = document.createElement('option');
+  opt.value = l.tag; opt.textContent = l.label;
+  langSelect.appendChild(opt);
+});
+langSelect.value = 'en-IN';
+
+let availableVoices = [];
+function loadVoices(){
+  availableVoices = ('speechSynthesis' in window) ? window.speechSynthesis.getVoices() : [];
+}
+if('speechSynthesis' in window){
+  window.speechSynthesis.onvoiceschanged = loadVoices;
+  loadVoices();
+} else {
+  speakToggleBtn.disabled = true;
+  speakToggleBtn.title = 'Text-to-speech is not supported in this browser.';
+}
+
+function pickVoice(tag){
+  const base = tag.split('-')[0].toLowerCase();
+  return availableVoices.find(v=>v.lang.toLowerCase() === tag.toLowerCase())
+      || availableVoices.find(v=>v.lang.toLowerCase().startsWith(base))
+      || availableVoices.find(v=>v.lang.toLowerCase().startsWith('en'))
+      || availableVoices[0] || null;
+}
+
+function textForCurrentScreen(){
+  if(screens.detail.classList.contains('active')){
+    const ex = activeCategory.exercises[activeExerciseIndex];
+    return `${ex.name}. ${ex.caption}`;
+  }
+  if(screens.category.classList.contains('active') && activeCategory){
+    return `${activeCategory.name}. ${activeCategory.exercises.length} exercises.`;
+  }
+  return "Let's move today. Choose an exercise category to begin.";
+}
+
+let isSpeaking = false;
+function speakCurrentScreen(){
+  if(!('speechSynthesis' in window)) return;
+  const utter = new SpeechSynthesisUtterance(textForCurrentScreen());
+  utter.lang = langSelect.value;
+  const voice = pickVoice(langSelect.value);
+  if(voice) utter.voice = voice;
+  utter.rate = 0.92;
+  utter.pitch = 1;
+  utter.onend = utter.onerror = ()=>{ isSpeaking = false; speakToggleBtn.classList.remove('speaking'); speakToggleBtn.textContent = '🔊'; };
+  window.speechSynthesis.speak(utter);
+  isSpeaking = true;
+  speakToggleBtn.classList.add('speaking');
+  speakToggleBtn.textContent = '⏹';
+}
+function stopSpeaking(){
+  if('speechSynthesis' in window) window.speechSynthesis.cancel();
+  isSpeaking = false;
+  speakToggleBtn.classList.remove('speaking');
+  speakToggleBtn.textContent = '🔊';
+}
+speakToggleBtn.addEventListener('click', ()=>{
+  isSpeaking ? stopSpeaking() : speakCurrentScreen();
+});
+
+const sosBtn = document.getElementById('sosBtn');
+const sosOverlay = document.getElementById('sosOverlay');
+const sosCancel = document.getElementById('sosCancel');
+sosBtn.addEventListener('click', ()=>{ stopSpeaking(); pauseTimer(); sosOverlay.classList.add('open'); });
+sosCancel.addEventListener('click', ()=> sosOverlay.classList.remove('open'));
+</script>
+</body>
+</html>

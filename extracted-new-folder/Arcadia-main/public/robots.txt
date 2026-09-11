@@ -1,0 +1,17 @@
+<<<<<<< HEAD
+=======
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Twitterbot
+Allow: /
+
+User-agent: facebookexternalhit
+Allow: /
+
+>>>>>>> origin/Final-Homepage+Chatbot
+User-agent: *
+Allow: /

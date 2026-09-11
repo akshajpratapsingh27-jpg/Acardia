@@ -1,0 +1,13 @@
+{
+  "name": "Trace the Shapes",
+  "short_name": "Shapes",
+  "description": "A gentle, dementia-friendly shape tracing game with five calm rounds.",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#fdf8ec",
+  "theme_color": "#fdf8ec",
+  "icons": [
+    { "src": "/favicon.ico", "sizes": "48x48", "type": "image/x-icon" }
+  ]
+}

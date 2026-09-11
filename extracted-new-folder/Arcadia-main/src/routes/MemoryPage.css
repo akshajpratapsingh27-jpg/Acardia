@@ -1,0 +1,686 @@
+/* ------------------------------------------------------------------ */
+/*  Memory Page — matches the Smriti Setu warm palette (SOS / Home)    */
+/* ------------------------------------------------------------------ */
+
+.memory-page {
+  width: min(800px, 90%);
+  min-height: calc(100vh - 230px);
+  margin: 0 auto;
+  padding: 40px 0 24px;
+}
+
+.memory-head h1 {
+  margin: 0;
+  font-size: clamp(30px, 5vw, 44px);
+  font-weight: 600;
+  letter-spacing: -1.5px;
+  color: #252525;
+}
+
+.memory-head p {
+  margin: 8px 0 0;
+  font-size: 16px;
+  color: #686868;
+}
+
+/* ---------- Today's moment hero ---------- */
+.memory-today {
+  margin: 26px 0 20px;
+  padding: 22px 26px;
+  border-radius: 26px;
+  background: linear-gradient(135deg, #f2c94c 0%, #f6d873 100%);
+  color: #252525;
+  position: relative;
+  overflow: hidden;
+}
+
+.memory-today::after {
+  content: "";
+  position: absolute;
+  right: -40px;
+  top: -40px;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.memory-chip {
+  font-size: 11px;
+  letter-spacing: 2px;
+  font-weight: 700;
+  text-transform: uppercase;
+  background: rgba(255, 255, 255, 0.55);
+  padding: 4px 12px;
+  border-radius: 30px;
+}
+
+.memory-today h2 {
+  margin: 10px 0 2px;
+  font-size: 52px;
+  font-weight: 700;
+  letter-spacing: -2px;
+}
+
+.memory-today h2 span {
+  font-size: 26px;
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.memory-today-sub {
+  margin: 0;
+  font-size: 15px;
+  color: rgba(0, 0, 0, 0.55);
+}
+
+/* ---------- View switcher ---------- */
+.memory-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+
+.memory-tabs button {
+  border: none;
+  background: rgba(255, 255, 255, 0.8);
+  color: #555;
+  padding: 10px 18px;
+  border-radius: 30px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.memory-tabs button:hover {
+  background: #fff;
+}
+
+.memory-tabs button.active {
+  background: #252525;
+  color: #f2c94c;
+}
+
+/* ---------- Highlights ---------- */
+.memory-highlights {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 28px;
+}
+
+.memory-highlight {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  background: rgba(255, 255, 255, 0.86);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 16px;
+}
+
+.memory-highlight-icon {
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(242, 201, 76, 0.25);
+  font-size: 20px;
+}
+
+.memory-highlight div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.memory-highlight strong {
+  font-size: 16px;
+  color: #252525;
+  font-weight: 600;
+}
+
+.memory-highlight-date {
+  font-size: 12px;
+  color: #999;
+}
+
+.memory-highlight-type {
+  margin-left: auto;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #8a7a50;
+  background: rgba(242, 201, 76, 0.2);
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+
+.memory-empty {
+  text-align: center;
+  padding: 30px 16px;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1.5px dashed rgba(0, 0, 0, 0.16);
+  border-radius: 18px;
+}
+
+.memory-empty span {
+  font-size: 30px;
+}
+
+.memory-empty p {
+  margin: 8px 0 0;
+  font-size: 14px;
+  color: #888;
+  line-height: 1.5;
+}
+
+/* ---------- Google calendar events ---------- */
+.memory-gcal {
+  margin-top: 8px;
+  padding: 14px 16px;
+  background: rgba(168, 107, 176, 0.08);
+  border: 1px solid rgba(168, 107, 176, 0.2);
+  border-radius: 16px;
+}
+
+.memory-gcal h4 {
+  margin: 0 0 10px;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #a86bb0;
+}
+
+.memory-gcal-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 0;
+  font-size: 14px;
+  color: #333;
+}
+
+.memory-gcal-icon {
+  font-size: 16px;
+}
+
+.memory-gcal-row em {
+  font-style: normal;
+  margin-left: auto;
+  color: #999;
+  font-size: 12px;
+}
+
+/* ---------- Cards ---------- */
+.memory-card {
+  background: rgba(255, 255, 255, 0.86);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 22px;
+  padding: 20px;
+  margin-bottom: 22px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
+}
+
+.memory-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.memory-card-head h3 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #252525;
+}
+
+.memory-card-hint {
+  font-size: 12px;
+  color: #999;
+}
+
+/* ---------- Upload grid ---------- */
+.memory-upload-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.memory-upload-grid .memory-card {
+  margin-bottom: 0;
+}
+
+.memory-upload-btn {
+  width: 100%;
+  border: none;
+  background: #252525;
+  color: #f2c94c;
+  padding: 14px;
+  border-radius: 14px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.memory-upload-btn:hover {
+  background: #f2c94c;
+  color: #252525;
+}
+
+/* ---------- Calendar grid ---------- */
+.memory-gcal-sync {
+  width: 100%;
+  margin-bottom: 14px;
+  border: none;
+  background: linear-gradient(135deg, #a86bb0, #8d5a95);
+  color: #fff;
+  padding: 12px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.memory-gcal-sync:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(168, 107, 176, 0.35);
+}
+
+.memory-cal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.memory-cal-head strong {
+  font-size: 17px;
+  color: #252525;
+}
+
+.memory-cal-head button {
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 50%;
+  background: #f0ece0;
+  color: #252525;
+  font-size: 20px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.memory-cal-head button:hover {
+  background: #f2c94c;
+}
+
+.memory-cal-week,
+.memory-cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+}
+
+.memory-cal-week span {
+  text-align: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: #b0a98f;
+  padding: 4px 0;
+}
+
+.memory-cal-day,
+.memory-cal-empty {
+  aspect-ratio: 1;
+  border-radius: 12px;
+}
+
+.memory-cal-empty {
+  background: transparent;
+}
+
+.memory-cal-day {
+  border: none;
+  background: #f7f4ea;
+  color: #333;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: 0.15s;
+}
+
+.memory-cal-day:hover {
+  background: #efeadd;
+}
+
+.memory-cal-day.today {
+  box-shadow: inset 0 0 0 2px #f2c94c;
+}
+
+.memory-cal-day.marked {
+  background: #f2c94c;
+  color: #252525;
+  font-weight: 700;
+}
+
+/* ---------- Gallery ---------- */
+.memory-gallery-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #252525;
+  margin: 6px 0 14px;
+}
+
+.memory-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 12px;
+}
+
+.memory-media {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+
+.memory-media img,
+.memory-media video {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  display: block;
+}
+
+.memory-media-label {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 18px 10px 8px;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.55));
+  color: #fff;
+  font-size: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.memory-media-label em {
+  font-style: normal;
+  opacity: 0.85;
+}
+
+/* ---------- Back ---------- */
+.memory-back {
+  display: block;
+  margin: 26px auto 0;
+  border: none;
+  background: transparent;
+  color: #686868;
+  font-size: 15px;
+  cursor: pointer;
+  padding: 8px 14px;
+  border-radius: 30px;
+  transition: 0.2s;
+}
+
+.memory-back:hover {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+/* ---------- Events below calendar ---------- */
+.memory-cal-events {
+  margin-top: 18px;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  padding-top: 14px;
+}
+
+.memory-cal-events h4 {
+  margin: 0 0 10px;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #8a7a50;
+}
+
+.memory-cal-event-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: rgba(242, 201, 76, 0.12);
+  border-radius: 12px;
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: #333;
+}
+
+.memory-cal-event-row em {
+  font-style: normal;
+  margin-left: auto;
+  color: #999;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+.memory-delete-btn {
+  width: 22px;
+  height: 22px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(232, 92, 74, 0.14);
+  color: #e85c4a;
+  font-size: 11px;
+  line-height: 1;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: 0.2s;
+}
+
+.memory-delete-btn:hover {
+  background: #e85c4a;
+  color: #fff;
+}
+
+/* ---------- Modal ---------- */
+.memory-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 200;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.memory-modal {
+  background: #fff;
+  width: 100%;
+  max-width: 500px;
+  border-radius: 24px 24px 0 0;
+  padding: 20px 22px 28px;
+  animation: mem-slide-up 0.25s ease;
+}
+
+@keyframes mem-slide-up {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
+}
+
+.memory-modal-handle {
+  width: 40px;
+  height: 4px;
+  background: #ddd;
+  border-radius: 2px;
+  margin: 0 auto 14px;
+}
+
+.memory-modal h3 {
+  margin: 0 0 18px;
+  font-size: 18px;
+  font-weight: 700;
+  color: #252525;
+}
+
+.memory-form-field {
+  margin-bottom: 16px;
+}
+
+.memory-form-field label {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: #888;
+  margin-bottom: 6px;
+}
+
+.memory-form-field input {
+  width: 100%;
+  padding: 13px;
+  border: 2px solid #f0ece0;
+  border-radius: 12px;
+  font-size: 16px;
+  color: #252525;
+  background: #faf8f2;
+  transition: 0.2s;
+}
+
+.memory-form-field input:focus {
+  outline: none;
+  border-color: #f2c94c;
+  background: #fff;
+}
+
+.memory-form-row {
+  display: flex;
+  gap: 8px;
+}
+
+.memory-type-btn {
+  flex: 1;
+  border: 2px solid #f0ece0;
+  background: #faf8f2;
+  color: #666;
+  padding: 10px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.memory-type-btn:hover {
+  border-color: #ddd;
+}
+
+.memory-type-btn.active {
+  border-color: #f2c94c;
+  background: #f2c94c;
+  color: #252525;
+}
+
+.memory-icon-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.memory-icon-btn {
+  width: 42px;
+  height: 42px;
+  border: 2px solid #f0ece0;
+  background: #faf8f2;
+  border-radius: 12px;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.2s;
+}
+
+.memory-icon-btn:hover {
+  border-color: #ddd;
+}
+
+.memory-icon-btn.active {
+  border-color: #f2c94c;
+  background: #f2c94c;
+}
+
+.memory-form-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.memory-form-cancel {
+  flex: 1;
+  padding: 14px;
+  border: none;
+  border-radius: 14px;
+  background: #f0ece0;
+  color: #666;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.memory-form-save {
+  flex: 1;
+  padding: 14px;
+  border: none;
+  border-radius: 14px;
+  background: #252525;
+  color: #f2c94c;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.memory-form-save:hover {
+  background: #f2c94c;
+  color: #252525;
+}
+
+.memory-form-cancel:hover {
+  background: #e6e2d8;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 700px) {
+  .memory-page {
+    width: 92%;
+    padding-top: 26px;
+  }
+
+  .memory-upload-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .memory-today h2 {
+    font-size: 42px;
+  }
+
+  .memory-cal-day {
+    font-size: 13px;
+  }
+}
