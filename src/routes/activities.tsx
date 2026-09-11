@@ -1,4 +1,5 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
+import { useLocation } from "wouter";
 import { Gamepad2, Users, Dumbbell, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -29,11 +30,18 @@ const ACTIVITY_SECTIONS = [
   },
 ];
 
-function ActivitiesPage() {
-  const navigate = useNavigate();
+export default function ActivitiesPage() {
+  const [, setLocation] = useLocation();
 
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-2xl flex-col px-5 py-12">
+      <button
+        type="button"
+        onClick={() => setLocation("/")}
+        className="mb-8 flex items-center gap-2 self-start text-sm font-medium text-muted-foreground hover:text-foreground"
+      >
+        ← Back to Home
+      </button>
       <header className="mb-8">
         <p className="text-xs font-semibold uppercase tracking-[0.22em] text-muted-foreground">
           Engagement & Wellness
@@ -57,7 +65,7 @@ function ActivitiesPage() {
                 if (section.id === "exercise") {
                   window.location.href = "/exercise/index.html";
                 } else {
-                  void navigate({ to: section.to as never });
+                  setLocation(section.to);
                 }
               }}
               className={cn(
@@ -80,13 +88,6 @@ function ActivitiesPage() {
         })}
       </div>
 
-      <button
-        type="button"
-        onClick={() => void navigate({ to: "/" })}
-        className="mt-8 self-start text-sm font-medium text-muted-foreground hover:text-foreground"
-      >
-        ← Back to Home
-      </button>
     </main>
   );
 }

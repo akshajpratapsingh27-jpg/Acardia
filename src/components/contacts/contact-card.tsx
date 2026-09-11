@@ -1,10 +1,24 @@
-import { MessageCircle, Phone, Trash2 } from 'lucide-react';
+import { MessageCircle, Pencil, Phone, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useLocation } from 'wouter';
+import { useCareData } from '@/state/care-context';
 import type { ContactRecord } from '@/types/care';
 
 const smsBody = encodeURIComponent('Hello, I am contacting you regarding the elderly person under my care.');
 
-export function ContactCard({ contact, onDelete }: { contact: ContactRecord; onDelete: () => void }) {
+export function ContactCard({
+  contact,
+  onDelete,
+  onEdit,
+  readOnly = false,
+}: {
+  contact: ContactRecord;
+  onDelete?: () => void;
+  onEdit?: () => void;
+  readOnly?: boolean;
+}) {
+  const [, setLocation] = useLocation();
+  const { triggerSOS } = useCareData();
   const isEmergency = contact.category === 'emergency';
   const phoneHref = `tel:${contact.phone}`;
   const smsHref = `sms:${contact.phone}?body=${smsBody}`;
@@ -22,14 +36,28 @@ export function ContactCard({ contact, onDelete }: { contact: ContactRecord; onD
         <p className="mt-1 text-xs font-semibold text-[hsl(var(--muted-foreground))]">{contact.phone}</p>
       </div>
       <div className="flex shrink-0 items-center gap-2">
-        <a
-          href={phoneHref}
-          className={`inline-flex min-h-11 items-center justify-center gap-2 rounded-xl px-4 text-sm font-bold ${isEmergency ? 'bg-[hsl(4_64%_52%)] text-white hover:brightness-95' : 'border border-[hsl(var(--border))] bg-[hsl(var(--card))] text-[hsl(var(--foreground))] hover:bg-[hsl(var(--muted))]'}`}
+        {isEmergency ? (
+          <button
+            type="button"
+            onClick={() => {
+              triggerSOS();
+              setLocation('/sos');
+            }}
+            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-[hsl(4_64%_52%)] px-4 text-sm font-bold text-white hover:brightness-95"
+            aria-label="Open emergency SOS"
+          >
+            <Phone size={16} /> Quick Call
+          </button>
+        ) : (
+          <a
+            href={phoneHref}
+          className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-[hsl(var(--border))] bg-[hsl(var(--card))] px-4 text-sm font-bold text-[hsl(var(--foreground))] hover:bg-[hsl(var(--muted))]"
           aria-label={`Call ${contact.name}`}
           data-testid={`button-call-${contact.id}`}
-        >
-          <Phone size={16} /> {isEmergency ? 'Quick Call' : 'Call'}
-        </a>
+          >
+            <Phone size={16} /> Call
+          </a>
+        )}
         {!isEmergency && (
           <a
             href={smsHref}
@@ -40,9 +68,18 @@ export function ContactCard({ contact, onDelete }: { contact: ContactRecord; onD
             <MessageCircle size={16} /> Message
           </a>
         )}
-        <Button variant="ghost" size="icon" aria-label={`Remove ${contact.name}`} onClick={onDelete} data-testid={`button-delete-contact-${contact.id}`}>
-          <Trash2 size={15} />
-        </Button>
+        {!readOnly && onDelete && (
+          <>
+          {onEdit && (
+            <Button variant="ghost" size="icon" aria-label={`Edit ${contact.name}`} onClick={onEdit} data-testid={`button-edit-contact-${contact.id}`}>
+              <Pencil size={15} />
+            </Button>
+          )}
+          <Button variant="ghost" size="icon" aria-label={`Remove ${contact.name}`} onClick={onDelete} data-testid={`button-delete-contact-${contact.id}`}>
+            <Trash2 size={15} />
+          </Button>
+          </>
+        )}
       </div>
     </article>
   );

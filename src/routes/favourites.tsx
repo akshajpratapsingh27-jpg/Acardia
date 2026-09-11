@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { DISHES } from "@/data/dishes";
-import { DishCard } from "@/components/DishCard";
+import { DishCard } from "../components/DishCard";
 import { getFavourites, toggleFavourite } from "@/lib/favourites";
 
 export const Route = createFileRoute("/favourites")({

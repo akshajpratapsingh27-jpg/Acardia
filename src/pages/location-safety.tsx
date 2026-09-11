@@ -129,7 +129,9 @@ export default function LocationSafetyPage() {
               max={5000}
               step={25}
               value={[location.safeZoneRadiusMeters]}
-              onValueChange={([v]) => setSafeZoneRadius(v)}
+              onValueChange={([v]) => {
+                if (v !== undefined) setSafeZoneRadius(v);
+              }}
               data-testid="slider-safe-zone-radius"
             />
           </div>

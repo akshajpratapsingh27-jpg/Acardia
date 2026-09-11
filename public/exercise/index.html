@@ -47,7 +47,7 @@
   /* ============ FLOATING SOS BUTTON ============ */
   .sos-btn{
     position: absolute;
-    bottom: 24px;
+    top: 24px;
     right: 22px;
     width: 52px;
     height: 52px;
@@ -70,6 +70,10 @@
 
   /* ============ HOME SCREEN ============ */
   .home-header{ margin-bottom:18px; }
+  .home-nav{
+    display:inline-flex; align-items:center; gap:6px; margin-bottom:18px;
+    color:var(--ink-soft); font-size:13px; font-weight:700; text-decoration:none;
+  }
   .home-kicker{ font-size:13px; font-weight:600; color:var(--ink-soft); margin:0 0 4px; }
   .home-title{ font-size:32px; font-weight:800; color:var(--ink); letter-spacing:-.5px; margin:0 0 8px; line-height:1.05; }
   .home-sub{ font-size:14.5px; color:var(--ink-soft); line-height:1.5; margin:0; max-width:34ch; }
@@ -162,6 +166,7 @@
 
   <!-- HOME SCREEN -->
   <div class="screen" id="homeScreen">
+    <a class="home-nav" href="/activities" aria-label="Back to Activities">← Back to Activities</a>
     <div class="home-header">
       <p class="home-kicker">Exercise Time</p>
       <h1 class="home-title">Five moves,<br>zero equipment.</h1>
@@ -282,7 +287,7 @@ ringFg.style.strokeDasharray = CIRCUM;
 
 // SOS Button Interaction
 sosBtn.addEventListener('click', () => {
-    alert('SOS Triggered! Calling emergency contacts...');
+    window.dispatchEvent(new CustomEvent('smritisetu:sos'));
 });
 
 function buildHome(){

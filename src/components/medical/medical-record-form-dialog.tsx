@@ -63,7 +63,12 @@ export function MedicalRecordFormDialog({
   const submit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!title.trim()) return;
-    onSubmit({ category, title: title.trim(), date, notes: notes.trim() || undefined });
+    onSubmit({
+      category,
+      title: title.trim(),
+      date,
+      ...(notes.trim() ? { notes: notes.trim() } : {}),
+    });
     onOpenChange(false);
   };
 

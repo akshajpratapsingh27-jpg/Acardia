@@ -1,7 +1,8 @@
 import { useState, useRef, useEffect } from "react";
 import { Send, Bot, User, ArrowLeft, Mic, MicOff, Volume2, VolumeX } from "lucide-react";
 import { GoogleGenAI } from "@google/genai";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
+import { useLocation } from "wouter";
 
 // --- Voice Synthesis (Text-to-Speech) Helper ---
 function speakText(text: string, onEnd?: () => void) {
@@ -46,7 +47,7 @@ const apiKey = import.meta.env["VITE_GEMINI_API_KEY"] || "";
 const ai = apiKey ? new GoogleGenAI({ apiKey }) : null;
 
 export function ChatbotScreen() {
-  const navigate = useNavigate();
+  const [, setLocation] = useLocation();
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
@@ -57,10 +58,12 @@ export function ChatbotScreen() {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isListening, setIsListening] = useState(false);
+  const [speechError, setSpeechError] = useState("");
   const [autoRead, setAutoRead] = useState(true);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const recognitionRef = useRef<any>(null);
+  const recognitionActiveRef = useRef(false);
   const chatSessionRef = useRef<
     ReturnType<NonNullable<typeof ai>["chats"]["create"]> | null
   >(null);
@@ -94,19 +97,34 @@ export function ChatbotScreen() {
           .map((res: any) => res[0].transcript)
           .join("");
         setInput(transcript);
+        setSpeechError("");
       };
 
       recognition.onerror = (err: any) => {
         console.error("Speech recognition error:", err);
         setIsListening(false);
+        if (err.error === "not-allowed" || err.error === "service-not-allowed") {
+          setSpeechError("Microphone access was denied. Please allow microphone access and try again.");
+        } else if (err.error === "no-speech") {
+          setSpeechError("No speech was heard. Please try again.");
+        } else {
+          setSpeechError("Voice input is unavailable right now. You can type your message instead.");
+        }
       };
 
       recognition.onend = () => {
+        recognitionActiveRef.current = false;
         setIsListening(false);
       };
 
       recognitionRef.current = recognition;
+      return () => {
+        recognitionActiveRef.current = false;
+        recognition.abort();
+        recognitionRef.current = null;
+      };
     }
+    return undefined;
   }, []);
 
   // Load synthesis voices on mount
@@ -130,13 +148,23 @@ export function ChatbotScreen() {
       return;
     }
 
-    if (isListening) {
+    if (isListening || recognitionActiveRef.current) {
       recognitionRef.current.stop();
+      recognitionActiveRef.current = false;
       setIsListening(false);
     } else {
-      window.speechSynthesis.cancel();
-      recognitionRef.current.start();
-      setIsListening(true);
+      try {
+        window.speechSynthesis.cancel();
+        setSpeechError("");
+        recognitionActiveRef.current = true;
+        recognitionRef.current.start();
+        setIsListening(true);
+      } catch (error) {
+        recognitionActiveRef.current = false;
+        console.error("Unable to start speech recognition:", error);
+        setIsListening(false);
+        setSpeechError("Voice input could not start. Please try again or type your message.");
+      }
     }
   };
 
@@ -205,7 +233,7 @@ export function ChatbotScreen() {
       <header className="flex items-center justify-between pb-4 border-b border-border/60">
         <div className="flex items-center gap-3">
           <button
-            onClick={() => void navigate({ to: "/" })}
+            onClick={() => setLocation("/")}
             className="p-2 rounded-full hover:bg-secondary transition-colors"
             type="button"
           >
@@ -289,7 +317,7 @@ export function ChatbotScreen() {
       </div>
 
       {/* Input Box */}
-      <div className="flex items-center gap-2 pt-3 border-t border-border/60">
+      <div className="relative flex items-center gap-2 pt-3 border-t border-border/60">
         {/* Voice Input Button */}
         <button
           onClick={toggleListening}
@@ -312,6 +340,11 @@ export function ChatbotScreen() {
           placeholder={isListening ? "Listening to your voice..." : "Type a message or press mic..."}
           className="flex-1 rounded-full border border-border/80 bg-card px-5 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-foreground/20"
         />
+        {speechError && (
+          <p className="absolute bottom-[-1.75rem] left-14 text-xs text-destructive" role="status">
+            {speechError}
+          </p>
+        )}
 
         <button
           onClick={sendMessage}

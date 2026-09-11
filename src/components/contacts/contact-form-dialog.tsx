@@ -16,7 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import type { ContactCategory } from '@/types/care';
+import type { ContactCategory, ContactRecord } from '@/types/care';
 
 const categoryOptions: { value: ContactCategory; label: string }[] = [
   { value: 'doctor', label: 'Doctor' },
@@ -38,11 +38,13 @@ export function ContactFormDialog({
   open,
   onOpenChange,
   defaultCategory,
+  initialContact,
   onSubmit,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   defaultCategory: ContactCategory;
+  initialContact?: ContactRecord | null;
   onSubmit: (values: ContactFormValues) => void;
 }) {
   const [category, setCategory] = useState<ContactCategory>(defaultCategory);
@@ -54,14 +56,14 @@ export function ContactFormDialog({
 
   useEffect(() => {
     if (open) {
-      setCategory(defaultCategory);
-      setName('');
-      setPhone('');
-      setRole('');
-      setClinic('');
-      setSpecialty('');
+      setCategory(initialContact?.category ?? defaultCategory);
+      setName(initialContact?.name ?? '');
+      setPhone(initialContact?.phone ?? '');
+      setRole(initialContact?.roleOrRelationship ?? '');
+      setClinic(initialContact?.hospitalOrClinic ?? '');
+      setSpecialty(initialContact?.specialty ?? '');
     }
-  }, [open, defaultCategory]);
+  }, [open, defaultCategory, initialContact]);
 
   const submit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -70,9 +72,9 @@ export function ContactFormDialog({
       category,
       name: name.trim(),
       phone: phone.trim(),
-      roleOrRelationship: role.trim() || undefined,
-      hospitalOrClinic: clinic.trim() || undefined,
-      specialty: specialty.trim() || undefined,
+      ...(role.trim() ? { roleOrRelationship: role.trim() } : {}),
+      ...(clinic.trim() ? { hospitalOrClinic: clinic.trim() } : {}),
+      ...(specialty.trim() ? { specialty: specialty.trim() } : {}),
     });
     onOpenChange(false);
   };
@@ -81,7 +83,7 @@ export function ContactFormDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent data-testid="dialog-contact-form">
         <DialogHeader>
-          <DialogTitle>Add contact</DialogTitle>
+          <DialogTitle>{initialContact ? 'Edit contact' : 'Add contact'}</DialogTitle>
         </DialogHeader>
         <form onSubmit={submit} className="space-y-4">
           <div className="space-y-2">
@@ -126,7 +128,7 @@ export function ContactFormDialog({
           )}
           <DialogFooter>
             <Button type="submit" disabled={!name.trim() || !phone.trim()} data-testid="button-save-contact">
-              Add contact
+              {initialContact ? 'Save changes' : 'Add contact'}
             </Button>
           </DialogFooter>
         </form>

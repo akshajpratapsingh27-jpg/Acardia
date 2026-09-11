@@ -1,11 +1,11 @@
 import { useMemo, useState } from 'react';
 import { CalendarDays, CheckCircle2, Clock3, Heart, Home, Lightbulb, Phone, Settings, Sparkles, Sun } from 'lucide-react';
 import { Link } from 'wouter';
-import { DetailScreenHeader } from '@/components/layout/detail-screen-header';
 import { DetailScreenBody, DetailScreenShell } from '@/components/layout/detail-screen-shell';
 import { Button } from '@/components/ui/button';
 import { useCareData } from '@/state/care-context';
 import type { ReminderRecord, ReminderType } from '@/types/care';
+import logo from '@/assets/ssetu.png';
 
 const moodOptions = [
   { value: 'happy', label: 'Happy', emoji: '😊' },
@@ -135,8 +135,8 @@ function sortRemindersChronologically(items: ReminderRecord[]) {
 }
 
 export default function MyDayPage() {
-  const { state, completeReminder } = useCareData();
-  const { elderly, reminders } = state;
+  const { state, completeReminder, triggerSOS } = useCareData();
+  const { reminders } = state;
   const [mood, setMood] = useState<MoodChoice | null>(null);
 
   const today = useMemo(() => new Date(), []);
@@ -161,45 +161,28 @@ export default function MyDayPage() {
 
   const completedTasksCount = todayTasks.filter((task) => task.status === 'completed').length;
   const moodResponse = mood ? moodResponses[mood] : null;
-  const greeting = (() => {
-    const hour = new Date().getHours();
-    if (hour < 12) return 'Good morning';
-    if (hour < 17) return 'Good afternoon';
-    return 'Good evening';
-  })();
-
   return (
     <DetailScreenShell>
-      <header className="flex h-[82px] items-center border-b border-black/10 bg-white/75 px-[5vw] sm:h-[105px]">
+      <header className="sticky top-0 z-20 flex h-20 items-center border-b border-border/60 bg-card/80 px-5 backdrop-blur-xl sm:h-[82px]">
         <Link href="/" className="flex items-center gap-3" aria-label="Go to home">
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#f2c94c] text-xl">✦</div>
-          <div>
-            <p className="text-2xl font-semibold tracking-[-1px] text-[#252525] sm:text-[29px]">smritisetu</p>
-            <span className="hidden text-xs tracking-[0.5px] text-[#777] sm:block">care recipient interface</span>
+          <img src={logo} alt="SmritiSetu" width={48} height={48} className="size-12 rounded-full ring-1 ring-border/70" />
+          <div className="hidden sm:block">
+            <p className="text-sm font-bold leading-tight tracking-tight">SmritiSetu</p>
+            <p className="text-xs text-muted-foreground">Bridging memories</p>
           </div>
         </Link>
         <div className="ml-auto flex items-center gap-2">
-          <div className="flex items-center gap-2 rounded-full bg-[#252525] px-2 py-2 text-white sm:px-4" aria-label="Emergency SOS">
-            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#e85c4a] text-xs font-bold">SOS</span>
-            <span className="hidden text-sm sm:inline">I need help</span>
-          </div>
-          <div className="flex items-center gap-2 rounded-[14px] border-0 bg-transparent p-3 text-lg text-[#252525]" aria-label="Settings">
-            <Settings size={20} />
-            <span className="hidden text-[17px] sm:inline">Settings</span>
-          </div>
+          <Link href="/sos" onClick={() => triggerSOS()} className="flex items-center gap-2 rounded-full bg-foreground py-2 pl-2 pr-4 text-sm font-semibold text-background shadow-lift" aria-label="Emergency SOS">
+            <span className="flex size-8 items-center justify-center rounded-full bg-sos text-[11px] font-bold text-sos-foreground">SOS</span>
+            <span className="hidden sm:inline">I need help</span>
+          </Link>
+          <Link href="/settings" className="flex items-center gap-2 rounded-full px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground" aria-label="Settings">
+            <Settings size={16} />
+            <span className="hidden sm:inline">Settings</span>
+          </Link>
         </div>
       </header>
       <DetailScreenBody>
-        <section className="rounded-[30px] bg-[#f4cfa1] p-6 shadow-sm sm:p-8">
-          <p className="text-xs font-semibold uppercase tracking-[2px] text-[#8d8060]">{greeting}</p>
-          <h2 className="mt-2 text-4xl font-medium tracking-[-2px] text-[#252525] sm:text-5xl">
-            {elderly.name}
-          </h2>
-          <p className="mt-3 text-lg text-[#686868]">
-            Here&apos;s what you have for today.
-          </p>
-        </section>
-
         <section className="rounded-[30px] bg-white/75 p-5 sm:p-6">
           <div className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-2">
@@ -396,11 +379,17 @@ export default function MyDayPage() {
                 </div>
               </div>
               <p className="mt-3 text-base text-[hsl(var(--foreground))]">{moodResponse.thought}</p>
-              <p className="mt-3 text-base text-[hsl(var(--muted-foreground))]">{moodResponse.activity}</p>
+              {mood === 'happy' || mood === 'not-so-good' ? (
+                <Link href="/memory" className="mt-3 block text-base text-[hsl(var(--muted-foreground))] underline underline-offset-4 hover:text-[hsl(var(--foreground))]">
+                  {moodResponse.activity}
+                </Link>
+              ) : (
+                <p className="mt-3 text-base text-[hsl(var(--muted-foreground))]">{moodResponse.activity}</p>
+              )}
 
               {moodResponse.showConnect ? (
                 <div className="mt-4">
-                  <Link href="/connect">
+                  <Link href="/family">
                     <Button type="button" className="min-h-[48px] w-full justify-center text-base font-bold">
                       <Phone size={18} />
                       Connect with Family

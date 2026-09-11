@@ -1,6 +1,8 @@
-import React, { useState, useMemo, useEffect } from "react";
+﻿import React, { useState, useMemo, useEffect } from "react";
 import "./MemoryPage.css";
-import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import { createFileRoute } from '@tanstack/react-router';
+import { useLocation } from 'wouter';
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 export const Route = createFileRoute('/memory')({
   component: MemoryPage,
@@ -34,9 +36,9 @@ const GOOGLE_CAL_URL =
   `&maxResults=60`;
 
 const SECTION_TAG = {
-  photos: { icon: "🖼️", color: "#e8b31c" },
-  videos: { icon: "🎥", color: "#5b8db8" },
-  calendar: { icon: "📅", color: "#a86bb0" }
+  photos: { icon: "Photos", color: "#e8b31c" },
+  videos: { icon: "Videos", color: "#5b8db8" },
+  calendar: { icon: "Calendar", color: "#a86bb0" }
 };
 
 const MEM_KEY = "smriti_memories";
@@ -51,7 +53,7 @@ function loadJson(key, fallback) {
 }
 
 export default function MemoryPage() {
-  const routerNavigate = useNavigate();
+  const [, setLocation] = useLocation();
   const [memories, setMemories] = useState(() => loadJson(MEM_KEY, []));
   const [markedDays, setMarkedDays] = useState(() => {
     const saved = loadJson(DAYS_KEY, null);
@@ -69,9 +71,9 @@ export default function MemoryPage() {
   const [eventModal, setEventModal] = useState(null); // null | { date: "YYYY-MM-DD" }
   const [eventTitle, setEventTitle] = useState("");
   const [eventType, setEventType] = useState("yearly");
-  const [eventIcon, setEventIcon] = useState("♥");
+  const [eventIcon, setEventIcon] = useState("Heart");
 
-  const ICON_CHOICES = ["♥", "🌸", "💍", "🥳", "🎂", "⭐", "🏡", "🎵", "📸", "🌅", "🎒", "🫂"];
+  const ICON_CHOICES = ["Heart", "Flower", "Gem", "Gift", "Cake", "Star", "Home", "Music", "Photo", "Sun", "Camera", "Ribbon"];
 
   // ---- Add / remove memories ----
   const addMemory = () => {
@@ -86,7 +88,7 @@ export default function MemoryPage() {
     setMemories((prev) => [...prev, mem]);
     setMarkedDays((prev) => [...new Set([...prev, mem.date])]);
     setEventTitle("");
-    setEventIcon("♥");
+    setEventIcon("Heart");
     setEventModal(null);
   };
 
@@ -124,7 +126,7 @@ export default function MemoryPage() {
     // Open modal to add an event for this day.
     setEventModal({ date: key });
     setEventTitle("");
-    setEventIcon("♥");
+    setEventIcon("Heart");
   };
 
   // ---- Google Calendar sync ----
@@ -142,7 +144,7 @@ export default function MemoryPage() {
       const events = (data.items || []).map((e) => ({
         date: (e.start?.date || e.start?.dateTime || "").slice(0, 10),
         title: e.summary || "Event",
-        icon: "📅",
+        icon: "Calendar",
         type: "yearly"
       }));
       setGcalEvents(events);
@@ -262,7 +264,7 @@ export default function MemoryPage() {
       {/* ===================== Header ===================== */}
       <header className="memory-head">
         <h1>Memory Lane</h1>
-        <p>Your photos, milestones and special days — kept safe.</p>
+        <p>Your photos, milestones and special days - kept safe.</p>
       </header>
 
       {/* ===================== Today ===================== */}
@@ -273,7 +275,7 @@ export default function MemoryPage() {
         </h2>
         <p className="memory-today-sub">
           {activeHighlights.length === 0
-            ? "Nothing special today — enjoy the quiet."
+            ? "Nothing special today - enjoy the quiet."
             : `${activeHighlights.length} ${view === "today" ? "moment" : "memory"} to remember:`}
         </p>
       </section>
@@ -300,7 +302,7 @@ export default function MemoryPage() {
       <section className="memory-highlights">
         {activeHighlights.length === 0 ? (
           <div className="memory-empty">
-            <span>🍂</span>
+            <span aria-hidden="true">Memory</span>
             <p>
               No {view} memories yet.
               <br />
@@ -329,7 +331,7 @@ export default function MemoryPage() {
         </div>
 
         <button className="memory-gcal-sync" onClick={syncGoogle}>
-          🔗 Sync Google Calendar
+          Sync Google Calendar
         </button>
 
         <CalendarGrid markedDays={markedDays} onDayClick={onDayClick} />
@@ -342,7 +344,7 @@ export default function MemoryPage() {
                 <span>{mem.icon}</span>
                 <span>{mem.title}</span>
                 <em>{mem.date}</em>
-                <button className="memory-delete-btn" onClick={() => removeMemory(i)}>✕</button>
+                <button className="memory-delete-btn" onClick={() => removeMemory(i)} aria-label={`Delete ${mem.title}`}>Delete</button>
               </div>
             ))}
           </div>
@@ -353,7 +355,7 @@ export default function MemoryPage() {
       <div className="memory-upload-grid">
         <section className="memory-card">
           <div className="memory-card-head">
-            <h3>{SECTION_TAG.photos.icon} Daily Photos</h3>
+            <h3>Daily Photos</h3>
           </div>
           <button className="memory-upload-btn" onClick={() => addUpload("photo")}>
             + Add today's photo
@@ -362,7 +364,7 @@ export default function MemoryPage() {
 
         <section className="memory-card">
           <div className="memory-card-head">
-            <h3>{SECTION_TAG.videos.icon} Daily Videos</h3>
+            <h3>Daily Videos</h3>
           </div>
           <button className="memory-upload-btn" onClick={() => addUpload("video")}>
             + Add today's video
@@ -392,8 +394,8 @@ export default function MemoryPage() {
         </section>
       )}
 
-      <button className="memory-back" onClick={() => routerNavigate({ to: "/" })}>
-        ← Back to Home
+      <button className="memory-back" onClick={() => setLocation("/")}>
+        Back to Home
       </button>
     </main>
   );
@@ -419,9 +421,9 @@ function CalendarGrid({ markedDays, onDayClick }) {
   return (
     <div className="memory-cal">
       <div className="memory-cal-head">
-        <button onClick={() => go(-1)} aria-label="Previous month">‹</button>
+        <button onClick={() => go(-1)} aria-label="Previous month"><ChevronLeft size={20} /></button>
         <strong>{MONTHS[m]} {y}</strong>
-        <button onClick={() => go(1)} aria-label="Next month">›</button>
+        <button onClick={() => go(1)} aria-label="Next month"><ChevronRight size={20} /></button>
       </div>
 
       <div className="memory-cal-week">

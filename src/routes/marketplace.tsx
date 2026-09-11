@@ -86,7 +86,7 @@ function DishCard({
   );
 }
 
-function Marketplace() {
+export default function Marketplace() {
   const [screen, setScreen] = useState<Screen>("intro");
   const [rounds, setRounds] = useState<Round[]>([]);
   const [index, setIndex] = useState(0);

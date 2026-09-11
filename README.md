@@ -1,39 +1,26 @@
-# Panda's Cute Shapes
+# APP NAME : SmritiSetu
+# TEAM NAME : Arcadia
 
-https://simple-shapes-game.lovable.app This is the app i created i want you to change that animation .i want this red panda to hold that icon cutely with his hands and legs lying down \.it should look more cute and approachable
+## Overview
 
-This project was built with [Lovable](https://lovable.dev).
+SmritiSetu is a compassionate digital platform incorporating AI-based cognitive gaming and memory assistance for elderly dementia patients in the Northeast Region (NER). The project focuses on bridging memory gaps for aging loved ones, offering cognitive games, memory timelines, and an intuitive caregiver dashboard to ensure safety and connection.
 
-**Live app**: https://happy-shape-friend.lovable.app
+## Key Features
 
-## Build with Lovable
+* **Caregiver Dashboard:** Real-time online status monitoring, activity tracking, and instant alerts to keep family members and caregivers informed.
+* **Memory & Family Section:** Dedicated spaces to view loved ones, share memories, and bridge gaps using familiar milestones and stories.
+* **Engaging Activities & Games:** Gentle, cognitive-boosting interactive games (such as "Let's Explore") designed to provide low-stress, enjoyable mental stimulation.
+* **Emergency Support:** Quick-access "I need help" and SOS tools built directly into the interface for immediate peace of mind.
 
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/004d5a80-fb76-4ab2-861c-87a3508c753c).
-# Northeastern Eats Match
+## Getting Started
 
-I want you to create the game. The homepage for the game should be same as the image that I have attached. Just change the name of the game. Name it as Marketplace. In this game, firstly, a person is shown list of some Northeastern food cuisines. Then the person will be given a big list of Northeastern food cuisines, and he or she has to choose the object which was shown before. The difficulty level should increase by every round. There should be five rounds, and at last, there should be add to favorites option, play again option, or motivational quote. Um, the game is overall for dementia patients, so keep that in mind.
+### Prerequisites
 
-Keep the dishes northeastern-centric, and the images should be approaching and add the name of the dish But in very small font, like the image should be more visible than the text. The image should be the highlight
+Ensure you have a package manager installed (such as `npm`, `pnpm`, or `yarn`).
 
-This project was built with [Lovable](https://lovable.dev).
+## 🛠️ Local Setup Instructions
 
-**Live app**: https://northeast-memory-lane.lovable.app
-
-## Build with Lovable
-
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/6ca78ae8-37bc-4c4f-8856-eacb545c2edc).
-
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: every change made in Lovable is committed straight to this repository.
-- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
-
-## Development
-
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
-
-```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
-npm run dev
-```
+1. Clone the repository.
+2. Copy the example env file: `cp .env.example .env`
+3. Open the new `.env` file and add your own API keys.
+4. Run `npm install` and `npm start`.

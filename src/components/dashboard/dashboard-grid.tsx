@@ -61,7 +61,13 @@ export function DashboardGrid() {
           )}
         </DashboardCard>
 
-        <DashboardCard href="/reminders" icon={<CalendarClock size={20} />} title="Reminders" testId="card-reminders">
+        <DashboardCard
+          href="/reminders"
+          icon={<CalendarClock size={20} />}
+          title="Reminders"
+          testId="card-reminders"
+          allowNestedLinks
+        >
           {upcomingReminders.length > 0 ? (
             <ul className="space-y-1.5">
               {upcomingReminders.map((reminder) => (

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useNavigate } from "@tanstack/react-router";
+import { useLocation } from "wouter";
 import "../styles.css";
 import {
   Users,
@@ -18,7 +18,8 @@ import {
 import { Mascot } from "@/components/Mascot";
 import { cn } from "@/lib/utils";
 import type { UserRole } from "@/lib/role";
-import logo from "@/assets/ssetu.jpeg";
+import logo from "@/assets/ssetu.png";
+import { useCareData } from "@/state/care-context";
 
 type Dest =
   | "/family"
@@ -44,7 +45,7 @@ const PATIENT_TILES: { title: string; blurb: string; icon: typeof Users; tone: s
     blurb: "Let's have a conversation",
     icon: MessageCircle,
     tone: "bg-sage/80 text-sage-foreground",
-    to: "/talk",
+    to: "/chatbot",
   },
   {
     title: "My Day",
@@ -119,7 +120,8 @@ type Reach = {
 };
 
 export function HomeScreen({ name, role }: { name: string; role: UserRole; onReset?: () => void }) {
-  const navigate = useNavigate();
+  const [, setLocation] = useLocation();
+  const { triggerSOS } = useCareData();
   const mascotRef = useRef<HTMLDivElement>(null);
   const [reach, setReach] = useState<Reach | null>(null);
   const timers = useRef<number[]>([]);
@@ -142,7 +144,7 @@ export function HomeScreen({ name, role }: { name: string; role: UserRole; onRes
       const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
       if (!box || reduced) {
-        void navigate({ to: to as never });
+        setLocation(to);
         return;
       }
 
@@ -166,12 +168,12 @@ export function HomeScreen({ name, role }: { name: string; role: UserRole; onRes
       });
 
       timers.current.push(
-        window.setTimeout(() => setReach((f) => (f ? { ...f, phase: "tap" } : f)), 470),
-        window.setTimeout(() => setReach((f) => (f ? { ...f, phase: "splash" } : f)), 760),
-        window.setTimeout(() => void navigate({ to: to as never }), 1860),
+        window.setTimeout(() => setReach((f) => (f ? { ...f, phase: "tap" } : f)), 20),
+        window.setTimeout(() => setReach((f) => (f ? { ...f, phase: "splash" } : f)), 220),
+        window.setTimeout(() => setLocation(to), 1000),
       );
     },
-    [reach, navigate],
+    [reach, setLocation],
   );
 
   const flight = reach;
@@ -201,7 +203,10 @@ export function HomeScreen({ name, role }: { name: string; role: UserRole; onRes
           <div className="flex items-center gap-2">
             <button
               type="button"
-              onClick={(e) => go(e, "/sos")}
+              onClick={(e) => {
+                triggerSOS();
+                go(e, "/sos");
+              }}
               className="flex items-center gap-2 rounded-full bg-foreground py-2 pl-2 pr-4 text-sm font-semibold text-background shadow-lift transition-transform hover:scale-[1.02]"
             >
               <span className="flex size-8 items-center justify-center rounded-full bg-sos text-[11px] font-bold text-sos-foreground">
@@ -351,7 +356,7 @@ export function HomeScreen({ name, role }: { name: string; role: UserRole; onRes
                 background: color,
                 filter: "blur(1px)",
                 transform: "scale(0)",
-                animation: `splash-pop ${700 + i * 150}ms cubic-bezier(0.22, 1, 0.36, 1) ${i * 70}ms both`,
+                animation: `splash-pop ${1100 + i * 180}ms cubic-bezier(0.22, 1, 0.36, 1) ${i * 90}ms both`,
               }}
             />
           ))}
@@ -363,7 +368,7 @@ export function HomeScreen({ name, role }: { name: string; role: UserRole; onRes
               width: reach.cover,
               height: reach.cover,
               transform: "scale(0)",
-              animation: "splash-cover 700ms cubic-bezier(0.5, 0, 0.3, 1) 520ms both",
+              animation: "splash-cover 1100ms cubic-bezier(0.5, 0, 0.3, 1) 220ms both",
             }}
           />
         </div>

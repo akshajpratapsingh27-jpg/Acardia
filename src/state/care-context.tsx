@@ -61,6 +61,14 @@ function applySafeZoneCheck(state: CareState, nextCoordinates: { lat: number; ln
   };
 }
 
+export function applySOS(state: CareState): CareState {
+  return {
+    ...state,
+    location: { ...state.location, sosActive: true },
+    alerts: pushAlert(state.alerts, 'emergency', 'Emergency SOS', 'SOS was triggered from the elderly companion app.'),
+  };
+}
+
 interface CareContextValue {
   state: CareState;
   unresolvedAlertCount: number;
@@ -150,6 +158,12 @@ export function CareDataProvider({ children }: { children: ReactNode }) {
 
     window.addEventListener('storage', handleStorage);
     return () => window.removeEventListener('storage', handleStorage);
+  }, []);
+
+  useEffect(() => {
+    const handleExternalSOS = () => setState(applySOS);
+    window.addEventListener('smritisetu:sos', handleExternalSOS);
+    return () => window.removeEventListener('smritisetu:sos', handleExternalSOS);
   }, []);
 
   const syncNow = useCallback(() => {
@@ -286,11 +300,7 @@ export function CareDataProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const triggerSOS = useCallback(() => {
-    setState((s) => ({
-      ...s,
-      location: { ...s.location, sosActive: true },
-      alerts: pushAlert(s.alerts, 'emergency', 'Emergency SOS', 'SOS was triggered from the elderly companion app.'),
-    }));
+    setState(applySOS);
   }, []);
 
   const clearSOS = useCallback(() => {

@@ -1,9 +1,9 @@
 import React from "react";
-import { useNavigate } from "@tanstack/react-router";
+import { useLocation } from "wouter";
 import { clearProfile } from "../lib/role";
 
 export default function SettingsPage() {
-  const navigate = useNavigate();
+  const [, setLocation] = useLocation();
 
   return (
     <main className="mx-auto flex min-h-[100vh - 230px] max-w-[800px] flex-col px-6 py-12">
@@ -25,7 +25,7 @@ export default function SettingsPage() {
           type="button"
           onClick={() => {
             clearProfile();
-            void navigate({ to: "/" });
+            setLocation("/");
           }}
           className="rounded-full bg-foreground px-5 py-2.5 text-sm font-semibold text-background shadow-lift transition-transform hover:scale-[1.02]"
         >
@@ -35,7 +35,7 @@ export default function SettingsPage() {
 
       <button
         type="button"
-        onClick={() => navigate({ to: "/" })}
+        onClick={() => setLocation("/")}
         className="mt-8 self-start text-sm font-medium text-[#686868] hover:text-[#252525]"
       >
         ← Back to Home

@@ -14,14 +14,19 @@ import { Route as ActivitiesRouteImport } from './routes/activities'
 import { Route as ChatbotRouteImport } from './routes/chatbot'
 import { Route as FamilyRouteImport } from './routes/family'
 import { Route as FavouritesRouteImport } from './routes/favourites'
+import { Route as Favourites1RouteImport } from './routes/favourites1'
 import { Route as FestivalFavouritesRouteImport } from './routes/festival-favourites'
 import { Route as FlipRouteImport } from './routes/flip'
 import { Route as MarketplaceRouteImport } from './routes/marketplace'
+import { Route as Marketplace2RouteImport } from './routes/marketplace2'
 import { Route as MemoryRouteImport } from './routes/memory'
 import { Route as MyDayRouteImport } from './routes/my-day'
 import { Route as PlayRouteImport } from './routes/play'
 import { Route as Play2RouteImport } from './routes/play2'
 import { Route as Play3RouteImport } from './routes/play3'
+import { Route as Play4RouteImport } from './routes/play4'
+import { Route as Play5RouteImport } from './routes/play5'
+import { Route as Play6RouteImport } from './routes/play6'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as SosRouteImport } from './routes/sos'
 import { Route as TalkRouteImport } from './routes/talk'
@@ -52,6 +57,11 @@ const FavouritesRoute = FavouritesRouteImport.update({
   path: '/favourites',
   getParentRoute: () => rootRouteImport,
 } as any)
+const Favourites1Route = Favourites1RouteImport.update({
+  id: '/favourites1',
+  path: '/favourites1',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const FestivalFavouritesRoute = FestivalFavouritesRouteImport.update({
   id: '/festival-favourites',
   path: '/festival-favourites',
@@ -65,6 +75,11 @@ const FlipRoute = FlipRouteImport.update({
 const MarketplaceRoute = MarketplaceRouteImport.update({
   id: '/marketplace',
   path: '/marketplace',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const Marketplace2Route = Marketplace2RouteImport.update({
+  id: '/marketplace2',
+  path: '/marketplace2',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MemoryRoute = MemoryRouteImport.update({
@@ -90,6 +105,21 @@ const Play2Route = Play2RouteImport.update({
 const Play3Route = Play3RouteImport.update({
   id: '/play3',
   path: '/play3',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const Play4Route = Play4RouteImport.update({
+  id: '/play4',
+  path: '/play4',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const Play5Route = Play5RouteImport.update({
+  id: '/play5',
+  path: '/play5',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const Play6Route = Play6RouteImport.update({
+  id: '/play6',
+  path: '/play6',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SettingsRoute = SettingsRouteImport.update({
@@ -119,14 +149,19 @@ export interface FileRoutesByFullPath {
   '/chatbot': typeof ChatbotRoute
   '/family': typeof FamilyRoute
   '/favourites': typeof FavouritesRoute
+  '/favourites1': typeof Favourites1Route
   '/festival-favourites': typeof FestivalFavouritesRoute
   '/flip': typeof FlipRoute
   '/marketplace': typeof MarketplaceRoute
+  '/marketplace2': typeof Marketplace2Route
   '/memory': typeof MemoryRoute
   '/my-day': typeof MyDayRoute
   '/play': typeof PlayRoute
   '/play2': typeof Play2Route
   '/play3': typeof Play3Route
+  '/play4': typeof Play4Route
+  '/play5': typeof Play5Route
+  '/play6': typeof Play6Route
   '/settings': typeof SettingsRoute
   '/sos': typeof SosRoute
   '/talk': typeof TalkRoute
@@ -138,14 +173,19 @@ export interface FileRoutesByTo {
   '/chatbot': typeof ChatbotRoute
   '/family': typeof FamilyRoute
   '/favourites': typeof FavouritesRoute
+  '/favourites1': typeof Favourites1Route
   '/festival-favourites': typeof FestivalFavouritesRoute
   '/flip': typeof FlipRoute
   '/marketplace': typeof MarketplaceRoute
+  '/marketplace2': typeof Marketplace2Route
   '/memory': typeof MemoryRoute
   '/my-day': typeof MyDayRoute
   '/play': typeof PlayRoute
   '/play2': typeof Play2Route
   '/play3': typeof Play3Route
+  '/play4': typeof Play4Route
+  '/play5': typeof Play5Route
+  '/play6': typeof Play6Route
   '/settings': typeof SettingsRoute
   '/sos': typeof SosRoute
   '/talk': typeof TalkRoute
@@ -158,14 +198,19 @@ export interface FileRoutesById {
   '/chatbot': typeof ChatbotRoute
   '/family': typeof FamilyRoute
   '/favourites': typeof FavouritesRoute
+  '/favourites1': typeof Favourites1Route
   '/festival-favourites': typeof FestivalFavouritesRoute
   '/flip': typeof FlipRoute
   '/marketplace': typeof MarketplaceRoute
+  '/marketplace2': typeof Marketplace2Route
   '/memory': typeof MemoryRoute
   '/my-day': typeof MyDayRoute
   '/play': typeof PlayRoute
   '/play2': typeof Play2Route
   '/play3': typeof Play3Route
+  '/play4': typeof Play4Route
+  '/play5': typeof Play5Route
+  '/play6': typeof Play6Route
   '/settings': typeof SettingsRoute
   '/sos': typeof SosRoute
   '/talk': typeof TalkRoute
@@ -179,14 +224,19 @@ export interface FileRouteTypes {
     | '/chatbot'
     | '/family'
     | '/favourites'
+    | '/favourites1'
     | '/festival-favourites'
     | '/flip'
     | '/marketplace'
+    | '/marketplace2'
     | '/memory'
     | '/my-day'
     | '/play'
     | '/play2'
     | '/play3'
+    | '/play4'
+    | '/play5'
+    | '/play6'
     | '/settings'
     | '/sos'
     | '/talk'
@@ -198,14 +248,19 @@ export interface FileRouteTypes {
     | '/chatbot'
     | '/family'
     | '/favourites'
+    | '/favourites1'
     | '/festival-favourites'
     | '/flip'
     | '/marketplace'
+    | '/marketplace2'
     | '/memory'
     | '/my-day'
     | '/play'
     | '/play2'
     | '/play3'
+    | '/play4'
+    | '/play5'
+    | '/play6'
     | '/settings'
     | '/sos'
     | '/talk'
@@ -217,14 +272,19 @@ export interface FileRouteTypes {
     | '/chatbot'
     | '/family'
     | '/favourites'
+    | '/favourites1'
     | '/festival-favourites'
     | '/flip'
     | '/marketplace'
+    | '/marketplace2'
     | '/memory'
     | '/my-day'
     | '/play'
     | '/play2'
     | '/play3'
+    | '/play4'
+    | '/play5'
+    | '/play6'
     | '/settings'
     | '/sos'
     | '/talk'
@@ -237,14 +297,19 @@ export interface RootRouteChildren {
   ChatbotRoute: typeof ChatbotRoute
   FamilyRoute: typeof FamilyRoute
   FavouritesRoute: typeof FavouritesRoute
+  Favourites1Route: typeof Favourites1Route
   FestivalFavouritesRoute: typeof FestivalFavouritesRoute
   FlipRoute: typeof FlipRoute
   MarketplaceRoute: typeof MarketplaceRoute
+  Marketplace2Route: typeof Marketplace2Route
   MemoryRoute: typeof MemoryRoute
   MyDayRoute: typeof MyDayRoute
   PlayRoute: typeof PlayRoute
   Play2Route: typeof Play2Route
   Play3Route: typeof Play3Route
+  Play4Route: typeof Play4Route
+  Play5Route: typeof Play5Route
+  Play6Route: typeof Play6Route
   SettingsRoute: typeof SettingsRoute
   SosRoute: typeof SosRoute
   TalkRoute: typeof TalkRoute
@@ -288,6 +353,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FavouritesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/favourites1': {
+      id: '/favourites1'
+      path: '/favourites1'
+      fullPath: '/favourites1'
+      preLoaderRoute: typeof Favourites1RouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/festival-favourites': {
       id: '/festival-favourites'
       path: '/festival-favourites'
@@ -307,6 +379,13 @@ declare module '@tanstack/react-router' {
       path: '/marketplace'
       fullPath: '/marketplace'
       preLoaderRoute: typeof MarketplaceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/marketplace2': {
+      id: '/marketplace2'
+      path: '/marketplace2'
+      fullPath: '/marketplace2'
+      preLoaderRoute: typeof Marketplace2RouteImport
       parentRoute: typeof rootRouteImport
     }
     '/memory': {
@@ -342,6 +421,27 @@ declare module '@tanstack/react-router' {
       path: '/play3'
       fullPath: '/play3'
       preLoaderRoute: typeof Play3RouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/play4': {
+      id: '/play4'
+      path: '/play4'
+      fullPath: '/play4'
+      preLoaderRoute: typeof Play4RouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/play5': {
+      id: '/play5'
+      path: '/play5'
+      fullPath: '/play5'
+      preLoaderRoute: typeof Play5RouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/play6': {
+      id: '/play6'
+      path: '/play6'
+      fullPath: '/play6'
+      preLoaderRoute: typeof Play6RouteImport
       parentRoute: typeof rootRouteImport
     }
     '/settings': {
@@ -381,14 +481,19 @@ const rootRouteChildren: RootRouteChildren = {
   ChatbotRoute: ChatbotRoute,
   FamilyRoute: FamilyRoute,
   FavouritesRoute: FavouritesRoute,
+  Favourites1Route: Favourites1Route,
   FestivalFavouritesRoute: FestivalFavouritesRoute,
   FlipRoute: FlipRoute,
   MarketplaceRoute: MarketplaceRoute,
+  Marketplace2Route: Marketplace2Route,
   MemoryRoute: MemoryRoute,
   MyDayRoute: MyDayRoute,
   PlayRoute: PlayRoute,
   Play2Route: Play2Route,
   Play3Route: Play3Route,
+  Play4Route: Play4Route,
+  Play5Route: Play5Route,
+  Play6Route: Play6Route,
   SettingsRoute: SettingsRoute,
   SosRoute: SosRoute,
   TalkRoute: TalkRoute,

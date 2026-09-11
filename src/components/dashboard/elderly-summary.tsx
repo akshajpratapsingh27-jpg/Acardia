@@ -9,6 +9,8 @@ export function ElderlySummary() {
     (a) => !a.read && (a.severity === 'emergency' || a.severity === 'safety' || a.severity === 'medicine'),
   );
   const isSafe = location.status === 'inside_zone';
+  const lastActiveLabel =
+    state.device.lastSyncedMinutesAgo === 0 ? 'just now' : `${state.device.lastSyncedMinutesAgo} min ago`;
 
   return (
     <section
@@ -45,6 +47,9 @@ export function ElderlySummary() {
           </div>
           <p className="mt-2 text-sm text-[hsl(var(--muted-foreground))]">
             Dementia: {elderly.dementiaStage}
+          </p>
+          <p className="mt-2 text-xs font-semibold text-[hsl(var(--muted-foreground))]">
+            {state.device.online ? 'Online' : 'Offline'} · Last active: {lastActiveLabel}
           </p>
           <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs font-bold">
             <span

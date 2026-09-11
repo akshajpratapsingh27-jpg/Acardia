@@ -2,19 +2,16 @@ import { Bell, RefreshCw } from 'lucide-react';
 import { Link } from 'wouter';
 import { Logo } from '@/components/layout/logo';
 import { useCareData } from '@/state/care-context';
+import { clearProfile } from '@/lib/role';
 
 export function AppHeader() {
-  const { state, unresolvedAlertCount, syncNow } = useCareData();
-  const { device } = state;
-  const lastActiveLabel =
-    device.lastSyncedMinutesAgo === 0
-      ? 'just now'
-      : `${device.lastSyncedMinutesAgo} min ago`;
-
+  const { unresolvedAlertCount, syncNow } = useCareData();
   return (
     <header className="flex min-h-[76px] items-center justify-between border-b border-[hsl(var(--border))] px-5 py-4 sm:px-8 lg:px-12">
       <div className="flex items-center gap-3">
-        <Logo className="h-14 w-14 shrink-0 sm:h-16 sm:w-16" />
+        <div className="h-12 w-12 shrink-0 overflow-hidden rounded-full sm:h-14 sm:w-14">
+          <Logo className="h-full w-full object-contain" />
+        </div>
         <div className="min-w-0">
           <p className="truncate font-serif text-xl leading-tight text-[hsl(var(--foreground))] sm:text-2xl">
             SmritiSetu
@@ -26,21 +23,6 @@ export function AppHeader() {
       </div>
 
       <div className="ml-auto flex items-center gap-2 sm:gap-4">
-        <div className="flex flex-col items-end text-right">
-          <span className="text-[0.62rem] font-bold uppercase tracking-[0.14em] text-[hsl(var(--muted-foreground))]">
-            Last Seen
-          </span>
-          <span className="mt-0.5 flex items-center gap-1.5 text-xs font-bold text-[hsl(var(--foreground))]">
-            <span
-              className={`h-2 w-2 rounded-full ${device.online ? 'bg-[hsl(174_42%_43%)]' : 'bg-[hsl(var(--muted-foreground))]'}`}
-            />
-            {device.online ? 'Online' : 'Offline'}
-          </span>
-          <span className="mt-0.5 text-[0.7rem] leading-snug text-[hsl(var(--muted-foreground))]">
-            Last active: {lastActiveLabel}
-          </span>
-        </div>
-
         <button
           className="flex h-11 items-center gap-2 rounded-full px-2 text-xs font-bold text-[hsl(var(--muted-foreground))] transition hover:bg-[hsl(var(--muted))] sm:px-3"
           onClick={syncNow}
@@ -48,12 +30,22 @@ export function AppHeader() {
           data-testid="button-sync"
         >
           <RefreshCw size={14} />
-          <span className="hidden lg:inline">Sync</span>
+        </button>
+
+        <button
+          className="rounded-full px-3 py-2 text-xs font-bold text-[hsl(var(--muted-foreground))] transition hover:bg-[hsl(var(--muted))] hover:text-[hsl(var(--foreground))]"
+          onClick={() => {
+            clearProfile();
+            window.location.assign('/');
+          }}
+          data-testid="button-change-role"
+        >
+          Change Role
         </button>
 
         <Link
           href="/alerts"
-          className="relative flex h-11 w-11 items-center justify-center rounded-full border border-[hsl(var(--border))] bg-[hsl(var(--card))] text-[hsl(var(--foreground))] transition hover:-translate-y-0.5 hover:border-[hsl(var(--accent))]"
+          className="relative flex h-11 items-center justify-center gap-2 rounded-full border border-[hsl(var(--border))] bg-[hsl(var(--card))] px-3 text-[hsl(var(--foreground))] transition hover:-translate-y-0.5 hover:border-[hsl(var(--accent))]"
           aria-label="Open alerts and notifications"
           data-testid="button-open-alerts"
         >

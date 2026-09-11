@@ -1,4 +1,5 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
+import { Link } from "wouter";
 import { useEffect, useState } from "react";
 import { FESTIVALS } from "@/data/festivals";
 import { getFestivalFavourites, toggleFestivalFavourite } from "@/lib/fav-festivals";
@@ -22,7 +23,7 @@ export const Route = createFileRoute("/festival-favourites")({
   component: FestivalFavourites,
 });
 
-function FestivalFavourites() {
+export default function FestivalFavourites() {
   const [ids, setIds] = useState<string[]>([]);
   useEffect(() => setIds(getFestivalFavourites()), []);
   const list = FESTIVALS.filter((f) => ids.includes(f.id));

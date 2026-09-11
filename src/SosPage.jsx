@@ -1,33 +1,26 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import "./SosPage.css";
+import { useCareData } from "./state/care-context";
 
 const SECTION_META = {
   family: { label: "Family", icon: "👨\u200d👩\u200d👧\u200d👦", color: "#e8b31c", avatar: "👤" },
   caretaker: { label: "Caretaker", icon: "🏥", color: "#5b8db8", avatar: "🩺" },
-  doctor: { label: "Doctor", icon: "👨\u200d⚕️", color: "#a86bb0", avatar: "⚕️" }
+  doctor: { label: "Doctor", icon: "👨\u200d⚕️", color: "#a86bb0", avatar: "⚕️" },
+  emergency: { label: "Emergency Services", icon: "🚨", color: "#d32f2f", avatar: "🚨" }
 };
-
-const STORAGE_KEY = "smriti_sos_contacts";
-
-function loadContacts() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) return JSON.parse(raw);
-  } catch {}
-  return { family: [], caretaker: [], doctor: [] };
-}
 
 function telHref(phone) {
   return `tel:${phone.replace(/[^0-9+]/g, "")}`;
 }
 
 export default function SosPage({ navigate }) {
-  const [contacts, setContacts] = useState(loadContacts);
-
-  // Persist to localStorage whenever contacts change.
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(contacts));
-  }, [contacts]);
+  const { state, addContact, deleteContact, triggerSOS } = useCareData();
+  const contacts = {
+    family: state.contacts.filter((contact) => contact.category === "family"),
+    caretaker: state.contacts.filter((contact) => contact.category === "caregiver"),
+    doctor: state.contacts.filter((contact) => contact.category === "doctor"),
+    emergency: state.contacts.filter((contact) => contact.category === "emergency"),
+  };
 
   // Modal state
   const [modal, setModal] = useState(null);
@@ -46,18 +39,14 @@ export default function SosPage({ navigate }) {
 
   const saveContact = () => {
     if (!name.trim() || !phone.trim()) return;
-    setContacts((prev) => ({
-      ...prev,
-      [modal.type]: [...prev[modal.type], { name: name.trim(), phone: phone.trim(), relation: relation.trim() }]
-    }));
+    addContact({
+      category: modal.type === "caretaker" ? "caregiver" : modal.type,
+      name: name.trim(),
+      phone: phone.trim(),
+      ...(relation.trim() ? { roleOrRelationship: relation.trim() } : {}),
+    });
     closeModal();
   };
-
-  const removeContact = (type, index) =>
-    setContacts((prev) => ({
-      ...prev,
-      [type]: prev[type].filter((_, i) => i !== index)
-    }));
 
   const meta = modal ? SECTION_META[modal.type] : null;
 
@@ -108,7 +97,10 @@ export default function SosPage({ navigate }) {
         </div>
       )}
 
-      <button className="sos-siren sos-siren--big" onClick={() => window.location.href = "tel:112"}>
+      <button className="sos-siren sos-siren--big" onClick={() => {
+        triggerSOS();
+        window.location.href = "tel:112";
+      }}>
         <span className="sos-siren-label">SOS</span>
         <span className="sos-siren-hint">TAP TO CALL 112</span>
       </button>
@@ -141,7 +133,7 @@ export default function SosPage({ navigate }) {
                       <span className="sos-phone">{c.phone}</span>
                     </div>
                     <a className="sos-call" href={telHref(c.phone)}>Call</a>
-                    <button className="sos-delete" onClick={() => removeContact(type, i)}>✕</button>
+                    <button className="sos-delete" onClick={() => deleteContact(c.id)}>✕</button>
                   </div>
                 ))}
               </div>

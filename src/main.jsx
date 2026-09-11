@@ -1,10 +1,2 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
-import App from "./App.jsx";
-import "./Home.css";
-
-ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+// Keep the legacy JSX entry aligned with the active TypeScript entry.
+import "./main.tsx";

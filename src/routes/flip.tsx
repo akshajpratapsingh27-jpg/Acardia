@@ -1,4 +1,5 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
+import { Link } from "wouter";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   FESTIVALS,
@@ -42,7 +43,7 @@ function buildDeck(pairs: number): Card[] {
   );
 }
 
-function FlipGame() {
+export default function FlipGame() {
   const [round, setRound] = useState(0);
   const [deck, setDeck] = useState<Card[]>(() => buildDeck(ROUND_PAIRS[0]!));
   const [flipped, setFlipped] = useState<string[]>([]);

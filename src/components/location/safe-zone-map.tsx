@@ -54,7 +54,7 @@ export function SafeZoneMap({
   const markerRef = useRef<any>(null);
   const circleRef = useRef<any>(null);
   const [error, setError] = useState<string | null>(null);
-  const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY as string | undefined;
+  const apiKey = import.meta.env['VITE_GOOGLE_MAPS_API_KEY'] as string | undefined;
   const activeCoordinates = online ? currentCoordinates : lastKnownCoordinates;
 
   useEffect(() => {

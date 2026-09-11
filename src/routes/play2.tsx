@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Link } from "wouter";
 import { useEffect, useRef, useState } from "react";
-import { Heart, Play, RotateCcw, Star, Volume2 } from "lucide-react";
+import { ArrowLeft, Heart, Play, RotateCcw, Star, Volume2 } from "lucide-react";
 import momo from "@/assets/momo.png";
 import {
   buildRounds,
@@ -44,7 +45,7 @@ type Phase = "listen" | "choose" | "feedback";
 
 const FAV_KEY = "tune-with-me-favorites";
 
-function Index() {
+export default function Index() {
   const [screen, setScreen] = useState<Screen>("intro");
   const [rounds, setRounds] = useState<Round[]>([]);
   const [index, setIndex] = useState(0);
@@ -134,6 +135,9 @@ function Index() {
   return (
     <main className="min-h-screen bg-background px-4 py-8">
       <div className="mx-auto w-full max-w-3xl">
+        <Link href="/" className="mb-6 flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground">
+          <ArrowLeft className="h-4 w-4" /> Back to Home
+        </Link>
         {screen === "intro" && <Intro onStart={start} />}
 
         {screen === "play" && round && (

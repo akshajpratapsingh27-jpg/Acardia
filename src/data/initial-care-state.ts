@@ -1,5 +1,4 @@
 import type { CareState } from '@/types/care';
-import rajeshPortrait from '@/assets/rajesh-sharma.jpg';
 
 // Centralized mock data. Replace this module with a real API call later —
 // every component reads care state through useCareData(), so nothing else
@@ -8,7 +7,7 @@ export const initialCareState: CareState = {
   elderly: {
     name: 'Rajesh Sharma',
     age: 72,
-    photoUrl: rajeshPortrait,
+    photoUrl: null,
     dementiaStage: 'Moderate',
     preferredLanguage: 'Hindi',
     allergies: ['Penicillin'],

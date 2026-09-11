@@ -139,7 +139,8 @@ export function ReminderFormDialog({
   useEffect(() => {
     const allowedTypes = getTypeOptions(kind).map((option) => option.value);
     if (!allowedTypes.includes(type)) {
-      setType(allowedTypes[0]);
+      const firstType = allowedTypes[0];
+      if (firstType) setType(firstType);
     }
   }, [kind, type]);
 
@@ -165,7 +166,7 @@ export function ReminderFormDialog({
       date: resolvedDate,
       time,
       repeat,
-      notes: trimmedNotes || undefined,
+      ...(trimmedNotes ? { notes: trimmedNotes } : {}),
       important:
         kind === 'task'
           ? ['medicine', 'exercise', 'cognitive'].includes(type)

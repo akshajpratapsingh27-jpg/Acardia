@@ -17,14 +17,21 @@ const sections: { category: ContactCategory; title: string }[] = [
 ];
 
 export default function ConnectPage() {
-  const { state, addContact, deleteContact } = useCareData();
+  const { state, addContact, updateContact, deleteContact } = useCareData();
   const { toast } = useToast();
   const [formOpen, setFormOpen] = useState(false);
   const [formCategory, setFormCategory] = useState<ContactCategory>('family');
+  const [editingContact, setEditingContact] = useState<typeof state.contacts[number] | null>(null);
 
   const handleSubmit = (values: ContactFormValues) => {
-    addContact(values);
-    toast({ title: '✓ Contact added' });
+    if (editingContact) {
+      updateContact(editingContact.id, values);
+      toast({ title: '✓ Contact updated' });
+    } else {
+      addContact(values);
+      toast({ title: '✓ Contact added' });
+    }
+    setEditingContact(null);
   };
 
   return (
@@ -51,7 +58,16 @@ export default function ConnectPage() {
               <div className="mt-2 space-y-2">
                 {contacts.length > 0 ? (
                   contacts.map((contact) => (
-                    <ContactCard key={contact.id} contact={contact} onDelete={() => deleteContact(contact.id)} />
+                  <ContactCard
+                    key={contact.id}
+                    contact={contact}
+                    onDelete={() => deleteContact(contact.id)}
+                    onEdit={() => {
+                      setEditingContact(contact);
+                      setFormCategory(contact.category);
+                      setFormOpen(true);
+                    }}
+                  />
                   ))
                 ) : (
                   <p className="text-sm text-[hsl(var(--muted-foreground))]">No {title.toLowerCase()} added yet.</p>
@@ -62,7 +78,16 @@ export default function ConnectPage() {
         })}
       </DetailScreenBody>
 
-      <ContactFormDialog open={formOpen} onOpenChange={setFormOpen} defaultCategory={formCategory} onSubmit={handleSubmit} />
+      <ContactFormDialog
+        open={formOpen}
+        onOpenChange={(open) => {
+          setFormOpen(open);
+          if (!open) setEditingContact(null);
+        }}
+        defaultCategory={formCategory}
+        initialContact={editingContact}
+        onSubmit={handleSubmit}
+      />
     </DetailScreenShell>
   );
 }
